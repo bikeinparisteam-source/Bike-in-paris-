@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import imgNuit from '../assets/fond-nuit.png'
+import imgNuit from '../assets/fond-nuit.jpg'
 import imgMatin from '../assets/fond-matin.jpg'
-import imgApresMidi from '../assets/fond-apres-midi.png'
-import imgVelo from '../assets/fond-velo.png'
+import imgApresMidi from '../assets/fond-apres-midi.jpg'
+import imgVelo from '../assets/fond-velo.jpg'
 import logoVelo from '../assets/logo-velo.png'
 import logoEcriture from '../assets/logo-ecriture.png'
 import veloFront from '../assets/velo-front.png'
-import imgVeloQuais from '../assets/velo-quais.png'
+import imgVeloQuais from '../assets/velo-quais.jpg'
 
 const FRAMES = [
   { src: imgNuit,      time: '22h00', label: 'Nuit sur Paris' },
@@ -98,14 +98,27 @@ export default function Home() {
     { label: 'Tester',      ref: section5Ref },
   ], [])
 
+  const timersRef = useRef([])
+
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), TIMINGS[0]),
-      setTimeout(() => setPhase(2), TIMINGS[1]),
-      setTimeout(() => setPhase(3), TIMINGS[2]),
-      setTimeout(() => setHeroReady(true), TIMINGS[3]),
-    ]
-    return () => timers.forEach(clearTimeout)
+    const srcs = [imgNuit, imgMatin, imgApresMidi, imgVelo]
+    const preloads = srcs.map(src => new Promise(resolve => {
+      const img = new Image()
+      img.onload = resolve
+      img.onerror = resolve
+      img.src = src
+    }))
+
+    Promise.all(preloads).then(() => {
+      timersRef.current = [
+        setTimeout(() => setPhase(1), TIMINGS[0]),
+        setTimeout(() => setPhase(2), TIMINGS[1]),
+        setTimeout(() => setPhase(3), TIMINGS[2]),
+        setTimeout(() => setHeroReady(true), TIMINGS[3]),
+      ]
+    })
+
+    return () => timersRef.current.forEach(clearTimeout)
   }, [])
 
   const onMouseMove = (e) => {
