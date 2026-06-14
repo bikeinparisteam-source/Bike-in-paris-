@@ -76,6 +76,17 @@ const FAQ_ITEMS = [
   },
 ]
 
+/* ── Hook mobile ── */
+function useIsMobile(bp = 768) {
+  const [m, setM] = useState(() => typeof window !== 'undefined' && window.innerWidth < bp)
+  useEffect(() => {
+    const h = () => setM(window.innerWidth < bp)
+    window.addEventListener('resize', h, { passive: true })
+    return () => window.removeEventListener('resize', h)
+  }, [bp])
+  return m
+}
+
 export default function Home() {
   const [phase, setPhase] = useState(0)
   const [heroReady, setHeroReady] = useState(false)
@@ -121,6 +132,8 @@ export default function Home() {
     return () => timersRef.current.forEach(clearTimeout)
   }, [])
 
+  const isMobile = useIsMobile()
+
   const onMouseMove = (e) => {
     if (!heroRef.current) return
     const { clientWidth: w, clientHeight: h } = heroRef.current
@@ -128,7 +141,7 @@ export default function Home() {
   }
 
   return (
-    <div style={{ background: '#0C0B15' }}>
+    <div style={{ background: '#FAF8F4' }}>
 
       {/* ══════════ NAVIGATION FIXE ══════════ */}
       <NavHeader items={NAV_ITEMS} />
@@ -158,8 +171,8 @@ export default function Home() {
             <motion.div key="phrase" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 1.2 }}
               style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', padding: '0 32px', textAlign: 'center' }}>
               <div>
-                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(2rem,5vw,4rem)', color: 'rgba(255,255,255,0.92)', lineHeight: 1.25, textShadow: '0 2px 40px rgba(0,0,0,0.7)' }}>Visiter Paris à vélo</p>
-                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontSize: 'clamp(1.4rem,3.2vw,2.6rem)', color: 'rgba(255,255,255,0.92)', marginTop: '4px', textShadow: '0 2px 30px rgba(0,0,0,0.6)', textDecoration: 'underline', textDecorationColor: 'rgba(200,136,58,0.85)', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>à toute heure</p>
+                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(2rem,5vw,4rem)', color: 'rgba(255,255,255,0.9)', lineHeight: 1.25, textShadow: '0 2px 40px rgba(0,0,0,0.7)' }}>Visiter Paris à vélo</p>
+                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontSize: 'clamp(1.4rem,3.2vw,2.6rem)', color: 'rgba(255,255,255,0.9)', marginTop: '4px', textShadow: '0 2px 30px rgba(0,0,0,0.6)', textDecoration: 'underline', textDecorationColor: 'rgba(200,136,58,0.85)', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>à toute heure</p>
               </div>
             </motion.div>
           )}
@@ -179,7 +192,7 @@ export default function Home() {
               <motion.img src={logoVelo} alt="" initial={{ opacity: 0, y: -36, scale: 0.78 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1.1, ease: [0.16,1,0.3,1] }}
                 style={{ width: 'clamp(60px,8.5vw,96px)', marginBottom: '10px', filter: 'drop-shadow(0 0 32px rgba(200,136,58,0.28)) drop-shadow(0 2px 8px rgba(0,0,0,0.6))' }} />
               <motion.img src={logoEcriture} alt="Bike in Paris" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: 'easeOut', delay: 0.26 }}
-                style={{ width: 'clamp(170px,22vw,290px)', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.5))', marginBottom: '14px' }} />
+                style={{ width: isMobile ? 'clamp(200px,62vw,260px)' : 'clamp(170px,22vw,290px)', filter: 'drop-shadow(0 2px 14px rgba(0,0,0,0.5))', marginBottom: '14px' }} />
               <motion.div initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }} transition={{ duration: 0.9, delay: 0.55 }}
                 style={{ width: 'clamp(48px,6vw,80px)', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.65), transparent)', marginBottom: '12px' }} />
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.3, delay: 0.85 }}
@@ -209,7 +222,7 @@ export default function Home() {
                   textShadow: btnHovered ? '0 0 20px rgba(200,136,58,0.5)' : '0 1px 8px rgba(0,0,0,0.4)',
                 }}>Découvrir</motion.button>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 1.55 }}
-                style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(245,240,232,0.7)', fontSize: 'clamp(0.78rem,1.3vw,0.95rem)', textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
+                style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(0.78rem,1.3vw,0.95rem)', textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
                 Livraison à Paris · Retrait 12ème arrondissement
               </motion.p>
             </div>
@@ -220,24 +233,29 @@ export default function Home() {
 
       {/* ══════════ SECTION BIPLACE ══════════ */}
       <SectionBiplace sectionRef={sectionBiplaceRef} />
+      <GoldenSep />
 
       {/* ══════════ SECTION 2 — FAT BIKE ══════════ */}
       <Section2 sectionRef={section2Ref} prixRef={section3Ref} />
+      <GoldenSep />
 
       {/* ══════════ SECTION 3 — TARIFS ══════════ */}
       <Section3 sectionRef={section3Ref} />
+      <GoldenSep />
 
       {/* ══════════ SECTION 4 — COMMENT RÉSERVER ══════════ */}
       <Section4 sectionRef={section4Ref} />
+      <GoldenSep />
 
       {/* ══════════ SECTION 5 — TEST AVANT ACHAT ══════════ */}
       <Section5 sectionRef={section5Ref} />
+      <GoldenSep />
 
       {/* ══════════ SECTION FAQ ══════════ */}
       <SectionFAQ />
 
       {/* ══════════ FOOTER LÉGAL ══════════ */}
-      <footer style={{ background: '#060510', borderTop: '1px solid rgba(58,56,80,0.35)', padding: 'clamp(36px,6vh,56px) clamp(24px,5vw,80px) 28px' }}>
+      <footer style={{ background: '#1E1A15', borderTop: '1px solid rgba(200,136,58,0.2)', padding: 'clamp(36px,6vh,56px) clamp(24px,5vw,80px) 28px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
           {/* Ligne principale */}
@@ -280,14 +298,14 @@ export default function Home() {
                 ['Réserver', 'tel:0766880542'],
               ].map(([label, href]) => (
                 href
-                  ? <a key={label} href={href} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.45)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'rgba(200,136,58,0.9)'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,240,232,0.45)'}>{label}</a>
+                  ? <a key={label} href={href} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.82rem', color: 'rgba(30,26,21,0.45)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'rgba(200,136,58,0.9)'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(30,26,21,0.45)'}>{label}</a>
                   : <span key={label} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.45)' }}>{label}</span>
               ))}
             </div>
           </div>
 
           {/* Bas de footer */}
-          <div style={{ borderTop: '1px solid rgba(58,56,80,0.3)', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ borderTop: '1px solid rgba(245,240,232,0.1)', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.72rem', color: 'rgba(245,240,232,0.2)', margin: 0 }}>
               © {new Date().getFullYear()} Bike in Paris — Abel Dompnier · Tous droits réservés
             </p>
@@ -313,6 +331,22 @@ export default function Home() {
 
 
 /* ─────────────────────────────────────────────
+   SÉPARATEUR DORÉ
+───────────────────────────────────────────── */
+function GoldenSep() {
+  return (
+    <div style={{ position: 'relative', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 clamp(24px,5vw,80px)' }}>
+      <div style={{ position: 'absolute', left: 'clamp(24px,5vw,80px)', right: 'clamp(24px,5vw,80px)', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.18) 12%, rgba(200,136,58,0.35) 50%, rgba(200,136,58,0.18) 88%, transparent)' }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: '28px', height: '1px', background: 'linear-gradient(to left, rgba(200,136,58,0.4), transparent)' }} />
+        <div style={{ width: '6px', height: '6px', transform: 'rotate(45deg)', border: '1px solid rgba(200,136,58,0.55)', background: 'rgba(200,136,58,0.08)' }} />
+        <div style={{ width: '28px', height: '1px', background: 'linear-gradient(to right, rgba(200,136,58,0.4), transparent)' }} />
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────
    SECTION FAQ
 ───────────────────────────────────────────── */
 function SectionFAQ() {
@@ -321,7 +355,7 @@ function SectionFAQ() {
   const [open, setOpen] = useState(null)
 
   return (
-    <div style={{ background: 'linear-gradient(180deg, #09081A 0%, #060510 100%)', padding: 'clamp(80px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ background: 'linear-gradient(180deg, #F3EFE8 0%, #E8E3DB 100%)', padding: 'clamp(80px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', width: '900px', height: '500px', background: 'radial-gradient(ellipse, rgba(200,130,40,0.09) 0%, transparent 70%)', filter: 'blur(70px)', pointerEvents: 'none' }} />
 
       <div ref={innerRef} style={{ maxWidth: '860px', margin: '0 auto', position: 'relative' }}>
@@ -334,7 +368,7 @@ function SectionFAQ() {
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>
             Questions fréquentes
           </p>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#F5F0E8', margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: 0 }}>
             Vous avez des <em style={{ color: 'rgba(200,136,58,0.9)' }}>questions ?</em>
           </h2>
         </motion.div>
@@ -351,8 +385,8 @@ function SectionFAQ() {
                 transition={{ duration: 0.55, delay: 0.05 + i * 0.07 }}
                 style={{
                   borderRadius: '16px',
-                  border: `1px solid ${isOpen ? 'rgba(200,136,58,0.35)' : 'rgba(58,56,80,0.5)'}`,
-                  background: isOpen ? 'rgba(200,136,58,0.05)' : 'rgba(255,255,255,0.02)',
+                  border: `1px solid ${isOpen ? 'rgba(200,136,58,0.35)' : 'rgba(30,26,21,0.5)'}`,
+                  background: isOpen ? 'rgba(200,136,58,0.05)' : 'rgba(30,26,21,0.04)',
                   overflow: 'hidden',
                   transition: 'border-color 0.3s, background 0.3s',
                 }}
@@ -366,15 +400,15 @@ function SectionFAQ() {
                     background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
                   }}
                 >
-                  <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 600, fontSize: 'clamp(0.95rem,1.6vw,1.1rem)', color: isOpen ? '#F5F0E8' : 'rgba(245,240,232,0.8)', lineHeight: 1.3, transition: 'color 0.2s' }}>
+                  <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 600, fontSize: 'clamp(0.95rem,1.6vw,1.1rem)', color: isOpen ? '#1E1A15' : 'rgba(30,26,21,0.8)', lineHeight: 1.3, transition: 'color 0.2s' }}>
                     {item.q}
                   </span>
                   <motion.div
                     animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.25 }}
-                    style={{ flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%', background: isOpen ? 'rgba(200,136,58,0.18)' : 'rgba(58,56,80,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s' }}
+                    style={{ flexShrink: 0, width: '28px', height: '28px', borderRadius: '50%', background: isOpen ? 'rgba(200,136,58,0.18)' : 'rgba(30,26,21,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s' }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isOpen ? '#C8883A' : 'rgba(245,240,232,0.45)'} strokeWidth="2.5" strokeLinecap="round">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isOpen ? '#C8883A' : 'rgba(30,26,21,0.45)'} strokeWidth="2.5" strokeLinecap="round">
                       <path d="M12 5v14M5 12h14"/>
                     </svg>
                   </motion.div>
@@ -393,7 +427,7 @@ function SectionFAQ() {
                     >
                       <div style={{ padding: '0 24px 22px', paddingLeft: '24px' }}>
                         <div style={{ height: '1px', background: 'rgba(200,136,58,0.15)', marginBottom: '16px' }} />
-                        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(0.88rem,1.4vw,1rem)', color: 'rgba(245,240,232,0.65)', lineHeight: 1.75, margin: 0 }}>
+                        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(0.88rem,1.4vw,1rem)', color: 'rgba(30,26,21,0.65)', lineHeight: 1.75, margin: 0 }}>
                           {item.a}
                         </p>
                       </div>
@@ -410,7 +444,7 @@ function SectionFAQ() {
           initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 0.7 }}
           style={{ textAlign: 'center', marginTop: 'clamp(40px,7vh,64px)' }}
         >
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.4)', fontSize: '0.88rem', marginBottom: '18px' }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.4)', fontSize: '0.88rem', marginBottom: '18px' }}>
             Vous n'avez pas trouvé votre réponse ?
           </p>
           <a
@@ -438,6 +472,7 @@ function SectionFAQ() {
 function NavHeader({ items }) {
   const [active, setActive] = useState(0)
   const [hovered, setHovered] = useState(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const update = () => {
@@ -460,9 +495,10 @@ function NavHeader({ items }) {
         position: 'fixed', top: 0, left: 0, right: 0,
         zIndex: 100,
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-        padding: '0 0 14px',
-        height: '70px',
+        padding: isMobile ? '0 0 10px' : '0 0 14px',
+        height: isMobile ? '54px' : '70px',
         background: 'none',
+        transition: 'none',
       }}
     >
       <div style={{ position: 'relative', width: 'min(820px, 90vw)' }}>
@@ -473,7 +509,9 @@ function NavHeader({ items }) {
           bottom: '13px',
           left: 0, right: 0,
           height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.16) 8%, rgba(200,136,58,0.52) 50%, rgba(200,136,58,0.16) 92%, transparent)',
+          background: active > 0
+            ? 'linear-gradient(to right, transparent, rgba(30,26,21,0.12) 8%, rgba(30,26,21,0.28) 50%, rgba(30,26,21,0.12) 92%, transparent)'
+            : 'linear-gradient(to right, transparent, rgba(200,136,58,0.16) 8%, rgba(200,136,58,0.52) 50%, rgba(200,136,58,0.16) 92%, transparent)',
           pointerEvents: 'none',
         }} />
 
@@ -486,40 +524,48 @@ function NavHeader({ items }) {
                 onClick={() => item.ref?.current?.scrollIntoView({ behavior: 'smooth' })}
                 style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer' }}
               >
-                {/* Label — visible uniquement si actif ou si nav survolée */}
-                <motion.span
-                  initial={false}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: '0.54rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.18em',
-                    color: isActive ? '#C8883A' : 'rgba(255,255,255,0.92)',
-                    fontWeight: isActive ? 700 : 400,
-                    whiteSpace: 'nowrap',
-                    userSelect: 'none',
-                    lineHeight: 1,
-                    display: 'block',
-                    textShadow: '0 1px 6px rgba(0,0,0,0.8)',
-                  }}
-                >
-                  {item.label}
-                </motion.span>
+                {/* Label — caché sur mobile */}
+                {!isMobile && (
+                  <motion.span
+                    initial={false}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: '0.54rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.18em',
+                      color: active > 0
+                        ? (isActive ? '#C8883A' : 'rgba(30,26,21,0.5)')
+                        : (isActive ? '#C8883A' : 'rgba(255,255,255,0.75)'),
+                      fontWeight: isActive ? 700 : 400,
+                      whiteSpace: 'nowrap',
+                      userSelect: 'none',
+                      lineHeight: 1,
+                      display: 'block',
+                      textShadow: active === 0 ? '0 1px 6px rgba(0,0,0,0.8)' : 'none',
+                    }}
+                  >
+                    {item.label}
+                  </motion.span>
+                )}
 
                 {/* Cercle */}
                 <motion.div
                   animate={{
-                    borderColor: isActive ? '#C8883A' : 'rgba(200,136,58,0.28)',
-                    background: isActive ? 'rgba(200,136,58,0.13)' : 'rgba(7,6,14,0.6)',
+                    borderColor: active > 0
+                      ? (isActive ? '#C8883A' : 'rgba(30,26,21,0.75)')
+                      : (isActive ? '#C8883A' : 'rgba(200,136,58,0.28)'),
+                    background: active > 0
+                      ? (isActive ? '#C8883A' : '#1E1A15')
+                      : (isActive ? 'rgba(200,136,58,0.13)' : 'rgba(255,255,255,0.08)'),
                     boxShadow: isActive
-                      ? '0 0 18px rgba(200,136,58,0.65), 0 0 0 4px rgba(200,136,58,0.1)'
-                      : hovered ? '0 0 0 2px rgba(200,136,58,0.08)' : 'none',
+                      ? (active > 0 ? '0 0 12px rgba(200,136,58,0.4)' : '0 0 18px rgba(200,136,58,0.65), 0 0 0 4px rgba(200,136,58,0.1)')
+                      : 'none',
                     scale: isActive ? 1.14 : (hovered ? 1.05 : 1),
                   }}
                   transition={{ duration: 0.38, ease: [0.16,1,0.3,1] }}
                   style={{
-                    width: '26px', height: '26px',
+                    width: isMobile ? '32px' : '26px', height: isMobile ? '32px' : '26px',
                     borderRadius: '50%',
                     border: '1.5px solid rgba(200,136,58,0.28)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -533,7 +579,7 @@ function NavHeader({ items }) {
                       src={logoVelo}
                       alt=""
                       transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-                      style={{ width: '14px', height: '14px', objectFit: 'contain' }}
+                      style={{ width: '14px', height: '14px', objectFit: 'contain', filter: active > 0 ? 'brightness(0) invert(1)' : 'none' }}
                     />
                   )}
                 </motion.div>
@@ -553,6 +599,8 @@ function NavHeader({ items }) {
 function SectionBiplace({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
+  const [cardFlipped, setCardFlipped] = useState(false)
+  const isMobile = useIsMobile()
 
   const features = [
     { icon: '🛋️', label: 'Confortable', spec: null,    desc: 'Selle biplace ergonomique et amortissement optimal pour deux passagers.' },
@@ -561,7 +609,7 @@ function SectionBiplace({ sectionRef }) {
   ]
 
   return (
-    <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #0C0B15 0%, #0F0E1C 50%, #0C0B15 100%)', padding: 'clamp(80px,14vh,140px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
+    <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #FAF8F4 0%, #F2EDE5 50%, #FAF8F4 100%)', padding: 'clamp(48px,8vh,80px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
 
       {/* Lumière d'auberge — ambre chaud */}
       <div style={{ position: 'absolute', top: '-15%', right: '-10%', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(200,130,40,0.22) 0%, rgba(170,95,25,0.09) 45%, transparent 70%)', filter: 'blur(70px)', pointerEvents: 'none' }} />
@@ -570,53 +618,107 @@ function SectionBiplace({ sectionRef }) {
 
       <div ref={innerRef} style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
-        {/* ── Partie 1 : titre + paragraphe centré ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: [0.16,1,0.3,1] }}
-          style={{ textAlign: 'center', marginBottom: 'clamp(64px,11vh,110px)' }}
-        >
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '18px' }}>
-            L'expérience biplace
-          </p>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2.2rem,4.5vw,3.8rem)', color: '#F5F0E8', lineHeight: 1.2, margin: '0 0 28px' }}>
-            Découvrez Paris,{' '}
-            <em style={{ color: 'rgba(200,136,58,0.9)' }}>côte à côte.</em>
-          </h2>
-          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.55), transparent)', margin: '0 auto 28px' }} />
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.62)', fontSize: 'clamp(1rem,1.6vw,1.18rem)', lineHeight: 1.85, maxWidth: '680px', margin: '0 auto' }}>
-            Nos vélos électriques bi-places premium vous permettent de rouler, de discuter et de partager chaque panorama ensemble. C'est l'expérience parfaite pour se balader le long de la Seine, visiter le quartier de Montmartre et vivre la Ville Lumière en parfaite complicité.
-          </p>
-        </motion.div>
+        {/* ── Image + bullets ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 'clamp(32px,6vw,96px)', alignItems: 'center' }}>
 
-        {/* ── Partie 2 : image + bullets ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(40px,7vw,96px)', alignItems: 'center', marginBottom: 'clamp(64px,10vh,100px)' }}>
-
-          {/* Image velo sur les quais */}
+          {/* Image velo sur les quais — carte retournable */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1.1, ease: [0.16,1,0.3,1], delay: 0.18 }}
             style={{ position: 'relative' }}
           >
+            {/* Aura ambre */}
             <div style={{ position: 'absolute', inset: '-20px', borderRadius: '32px', background: 'radial-gradient(ellipse, rgba(200,136,58,0.12) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-            <img
-              src={imgVeloQuais}
-              alt="Vélo biplace sur les quais de Paris"
-              style={{ width: '100%', borderRadius: '20px', display: 'block', objectFit: 'cover', boxShadow: '0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)', position: 'relative' }}
-            />
+
+            {/* Zone 3D — events sur le wrapper fixe, pas sur l'élément qui tourne */}
+            <div
+              onMouseEnter={() => !isMobile && setCardFlipped(true)}
+              onMouseLeave={() => !isMobile && setCardFlipped(false)}
+              onClick={() => isMobile && setCardFlipped(f => !f)}
+              style={{ perspective: '1400px', position: 'relative', zIndex: 1, cursor: 'pointer' }}
+            >
+              <motion.div
+                animate={{ rotateY: cardFlipped ? 180 : 0 }}
+                transition={{ duration: 0.78, ease: [0.16,1,0.3,1] }}
+                style={{ position: 'relative', transformStyle: 'preserve-3d', width: '100%', aspectRatio: '4/3', pointerEvents: 'none' }}
+              >
+
+                {/* ── FACE AVANT — photo ── */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+                  borderRadius: '20px', overflow: 'hidden',
+                  boxShadow: '0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(30,26,21,0.06)',
+                }}>
+                  <img src={imgVeloQuais} alt="Vélo biplace sur les quais de Paris"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                </div>
+
+                {/* ── FACE ARRIÈRE — texte carte ── */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+                  transform: 'rotateY(180deg)',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(145deg, #FAF8F4 0%, #F2EDE5 100%)',
+                  border: '1.5px solid rgba(200,136,58,0.42)',
+                  boxShadow: '0 0 0 6px rgba(200,136,58,0.05), inset 0 0 90px rgba(200,136,58,0.04), 0 30px 80px rgba(0,0,0,0.55)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  padding: 'clamp(24px,4vw,40px) clamp(22px,4vw,36px)',
+                }}>
+                  {/* Coins dorés */}
+                  {[['top','left'],['top','right'],['bottom','left'],['bottom','right']].map(([v,h]) => (
+                    <div key={`${v}${h}`} style={{
+                      position: 'absolute', [v]: '18px', [h]: '18px',
+                      width: '28px', height: '28px',
+                      borderTop:    v === 'top'    ? '1.5px solid rgba(200,136,58,0.72)' : 'none',
+                      borderBottom: v === 'bottom' ? '1.5px solid rgba(200,136,58,0.72)' : 'none',
+                      borderLeft:   h === 'left'   ? '1.5px solid rgba(200,136,58,0.72)' : 'none',
+                      borderRight:  h === 'right'  ? '1.5px solid rgba(200,136,58,0.72)' : 'none',
+                    }} />
+                  ))}
+
+                  {/* Ornement haut */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '22px' }}>
+                    <div style={{ height: '1px', width: '38px', background: 'linear-gradient(to left, rgba(200,136,58,0.6), transparent)' }} />
+                    <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(200,136,58,0.75)' }} />
+                    <div style={{ height: '1px', width: '38px', background: 'linear-gradient(to right, rgba(200,136,58,0.6), transparent)' }} />
+                  </div>
+
+                  {/* Texte en italique */}
+                  <p style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(0.85rem, 1.2vw, 1.02rem)',
+                    color: 'rgba(30,26,21,0.72)',
+                    lineHeight: 1.92,
+                    textAlign: 'center',
+                    margin: 0,
+                  }}>
+                    Nos vélos électriques bi-places premium vous permettent de rouler, de discuter et de partager chaque panorama ensemble. C'est l'expérience parfaite pour se balader le long de la Seine, visiter le quartier de Montmartre et vivre la Ville Lumière en parfaite complicité.
+                  </p>
+
+                  {/* Ornement bas */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '22px' }}>
+                    <div style={{ height: '1px', width: '38px', background: 'linear-gradient(to left, rgba(200,136,58,0.6), transparent)' }} />
+                    <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(200,136,58,0.75)' }} />
+                    <div style={{ height: '1px', width: '38px', background: 'linear-gradient(to right, rgba(200,136,58,0.6), transparent)' }} />
+                  </div>
+                </div>
+
+              </motion.div>
+            </div>
           </motion.div>
 
           {/* Texte droite */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
             <motion.div initial={{ opacity: 0, y: 28 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.28 }}>
-              <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.22em', marginBottom: '14px' }}>
+              <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '16px' }}>
                 Notre vélo
               </p>
-              <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.6rem,3vw,2.6rem)', color: '#F5F0E8', lineHeight: 1.2, margin: 0 }}>
-                Le Fat Bike premium<br />
-                <em style={{ color: 'rgba(200,136,58,0.9)' }}>par excellence</em>
+              <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#1E1A15', lineHeight: 1.2, margin: 0 }}>
+                Découvrez Paris,<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>côte à côte.</span>
               </h3>
             </motion.div>
 
@@ -640,11 +742,11 @@ function SectionBiplace({ sectionRef }) {
                     {feat.icon}
                   </div>
                   <div>
-                    <p style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: '1.05rem', color: '#F5F0E8', margin: '0 0 5px', lineHeight: 1.2 }}>
+                    <p style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: '1.05rem', color: '#1E1A15', margin: '0 0 5px', lineHeight: 1.2 }}>
                       {feat.label}
                       {feat.spec && <span style={{ color: '#C8883A', marginLeft: '8px', fontStyle: 'normal' }}>{feat.spec}</span>}
                     </p>
-                    <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{feat.desc}</p>
+                    <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{feat.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -664,27 +766,20 @@ function SectionBiplace({ sectionRef }) {
 function Section2({ sectionRef, prixRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
+  const isMobile = useIsMobile()
 
   return (
-    <div ref={sectionRef} style={{ minHeight: '100vh', position: 'relative', background: 'linear-gradient(160deg, #0C0B15 0%, #12101E 50%, #0C0B15 100%)', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '25%', left: '15%', width: '850px', height: '850px', background: 'radial-gradient(circle, rgba(200,130,40,0.16) 0%, rgba(160,90,20,0.06) 45%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '8%', right: '-8%', width: '550px', height: '550px', background: 'radial-gradient(circle, rgba(165,90,25,0.14) 0%, transparent 65%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
+    <div ref={sectionRef} style={{ minHeight: '100vh', position: 'relative', background: 'linear-gradient(160deg, #FAF8F4 0%, #F0ECE4 50%, #FAF8F4 100%)', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '25%', left: '15%', width: '850px', height: '850px', background: 'radial-gradient(circle, rgba(200,130,40,0.07) 0%, rgba(160,90,20,0.04) 45%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '8%', right: '-8%', width: '550px', height: '550px', background: 'radial-gradient(circle, rgba(165,90,25,0.06) 0%, transparent 65%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
 
-      <div ref={innerRef} style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: 'clamp(60px,10vh,120px) clamp(24px,5vw,80px)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(40px,6vw,80px)', alignItems: 'center' }}>
-
-        {/* Vélo */}
-        <motion.div initial={{ opacity: 0, x: -60 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 1.1, ease: [0.16,1,0.3,1] }}
-          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '40px', background: 'radial-gradient(ellipse, rgba(200,136,58,0.22) 0%, transparent 70%)', filter: 'blur(12px)' }} />
-          <motion.img src={veloFront} alt="Fat bike biplace" animate={{ y: [0, -10, 0] }} transition={{ duration: 5, ease: 'easeInOut', repeat: Infinity }}
-            style={{ width: '100%', maxWidth: '520px', filter: 'drop-shadow(0 20px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(200,136,58,0.08))' }} />
-        </motion.div>
+      <div ref={innerRef} style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', padding: 'clamp(48px,8vh,88px) clamp(24px,5vw,80px)', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 'clamp(32px,6vw,80px)', alignItems: 'center' }}>
 
         {/* Texte */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', order: isMobile ? 2 : 1 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.15 }}>
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.8)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.22em', marginBottom: '12px' }}>Notre offre</p>
-            <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#F5F0E8', lineHeight: 1.2, margin: 0 }}>
+            <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#1E1A15', lineHeight: 1.2, margin: 0 }}>
               Louer votre fat bike<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>biplace</span>
             </h2>
           </motion.div>
@@ -697,7 +792,7 @@ function Section2({ sectionRef, prixRef }) {
               <motion.div key={i} initial={{ opacity: 0, x: 24 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.35 + i * 0.1 }}
                 style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '1rem' }}>{pt.icon}</div>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.85)', fontSize: 'clamp(0.9rem,1.5vw,1.05rem)', lineHeight: 1.55, margin: 0, paddingTop: '6px' }}>{pt.text}</p>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.85)', fontSize: 'clamp(0.9rem,1.5vw,1.05rem)', lineHeight: 1.55, margin: 0, paddingTop: '6px' }}>{pt.text}</p>
               </motion.div>
             ))}
           </div>
@@ -714,19 +809,27 @@ function Section2({ sectionRef, prixRef }) {
 
             <button
               onClick={() => prixRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', borderRadius: '50px', background: 'rgba(245,240,232,0.06)', border: '1.5px solid rgba(245,240,232,0.2)', cursor: 'pointer', transition: 'all 0.3s' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,240,232,0.12)'; e.currentTarget.style.borderColor = 'rgba(245,240,232,0.4)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(245,240,232,0.06)'; e.currentTarget.style.borderColor = 'rgba(245,240,232,0.2)' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', borderRadius: '50px', background: 'rgba(30,26,21,0.06)', border: '1.5px solid rgba(30,26,21,0.2)', cursor: 'pointer', transition: 'all 0.3s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(30,26,21,0.12)'; e.currentTarget.style.borderColor = 'rgba(30,26,21,0.4)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(30,26,21,0.06)'; e.currentTarget.style.borderColor = 'rgba(30,26,21,0.2)' }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M12 2v20M2 12h20"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 500, fontSize: '0.95rem', color: 'rgba(245,240,232,0.75)' }}>Voir les prix</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(30,26,21,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M12 2v20M2 12h20"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 500, fontSize: '0.95rem', color: 'rgba(30,26,21,0.75)' }}>Voir les prix</span>
             </button>
           </motion.div>
 
-          <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(245,240,232,0.3)', fontSize: '0.78rem', margin: 0 }}>
+          <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(30,26,21,0.3)', fontSize: '0.78rem', margin: 0 }}>
             Disponible 7j/7 pour réserver votre aventure
           </p>
         </div>
+
+        {/* Vélo — droite (1er sur mobile) */}
+        <motion.div initial={{ opacity: 0, x: isMobile ? 0 : 60 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 1.1, ease: [0.16,1,0.3,1] }}
+          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', order: isMobile ? 1 : 2 }}>
+          <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '80%', height: '40px', background: 'radial-gradient(ellipse, rgba(200,136,58,0.22) 0%, transparent 70%)', filter: 'blur(12px)' }} />
+          <motion.img src={veloFront} alt="Fat bike biplace" animate={{ y: [0, -10, 0] }} transition={{ duration: 5, ease: 'easeInOut', repeat: Infinity }}
+            style={{ width: '100%', maxWidth: '520px', filter: 'drop-shadow(0 20px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(200,136,58,0.08))' }} />
+        </motion.div>
       </div>
     </div>
   )
@@ -736,140 +839,243 @@ function Section2({ sectionRef, prixRef }) {
 /* ─────────────────────────────────────────────
    SECTION 3 — TARIFS
 ───────────────────────────────────────────── */
+const FORMULES = [
+  {
+    label: '2 heures',
+    prix: 25,
+    img: imgMatin,
+    desc: 'La balade express — idéale pour une découverte des quais ou du Marais.',
+    horaire: 'Dès 9h du matin',
+  },
+  {
+    label: 'Demi-journée',
+    prix: 40,
+    img: imgApresMidi,
+    desc: 'Matinée / Après-midi / Soirée',
+    horaire: '4 heures consécutives',
+    popular: true,
+  },
+  {
+    label: 'Journée',
+    prix: 55,
+    img: imgNuit,
+    desc: 'Notre formule la plus complète.',
+    horaire: '9h → 19h',
+    midnight: true,
+  },
+]
+
 function Section3({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
+  const [selected, setSelected] = useState(1)
+  const isMobile = useIsMobile()
 
   return (
-    <div ref={sectionRef} style={{ background: '#080710', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '-12%', left: '50%', transform: 'translateX(-50%)', width: '1000px', height: '550px', background: 'radial-gradient(ellipse, rgba(200,130,40,0.13) 0%, rgba(160,90,20,0.05) 50%, transparent 70%)', filter: 'blur(65px)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '0', right: '-8%', width: '550px', height: '450px', background: 'radial-gradient(ellipse, rgba(155,85,22,0.12) 0%, transparent 70%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
-      <div ref={innerRef} style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div ref={sectionRef} style={{ background: '#EDEAE3', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '-12%', left: '50%', transform: 'translateX(-50%)', width: '1000px', height: '550px', background: 'radial-gradient(ellipse, rgba(200,130,40,0.06) 0%, rgba(160,90,20,0.05) 50%, transparent 70%)', filter: 'blur(65px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, right: '-8%', width: '550px', height: '450px', background: 'radial-gradient(ellipse, rgba(155,85,22,0.05) 0%, transparent 70%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
+
+      <div ref={innerRef} style={{ maxWidth: '860px', margin: '0 auto' }}>
 
         {/* Titre */}
         <motion.div initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
-          style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,80px)' }}>
+          style={{ textAlign: 'center', marginBottom: 'clamp(36px,6vh,52px)' }}>
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Tarifs</p>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#F5F0E8', margin: '0 0 12px' }}>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: '0 0 14px' }}>
             Choisissez votre <em style={{ color: 'rgba(200,136,58,0.9)' }}>moment</em>
           </h2>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.45)', fontSize: 'clamp(0.88rem,1.4vw,1rem)', letterSpacing: '0.04em', margin: 0 }}>
-            Louer de 2h à 14 jours
+          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.45)', fontSize: 'clamp(0.88rem,1.4vw,1rem)', margin: 0 }}>
+            Louer de 9h à 0h00
           </p>
         </motion.div>
 
-        {/* Grille 5 cartes : 3 + 2 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Ligne 1 : 3 cartes */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-            {TARIFS.slice(0, 3).map((t, i) => <TarifCard key={i} tarif={t} index={i} isInView={isInView} />)}
-          </div>
-          {/* Ligne 2 : 2 cartes */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-            {TARIFS.slice(3).map((t, i) => <TarifCard key={i+3} tarif={t} index={i+3} isInView={isInView} tall />)}
-          </div>
-        </div>
-
-        {/* Livraison / retrait */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.8 }}
-          style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', marginTop: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 24px', borderRadius: '50px', background: 'rgba(200,136,58,0.09)', border: '1px solid rgba(200,136,58,0.28)' }}>
-            <span style={{ fontSize: '1.05rem' }}>🛵</span>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.9rem', color: 'rgba(245,240,232,0.85)' }}>
-              Livraison dans Paris <strong style={{ color: 'rgba(200,136,58,0.95)', fontWeight: 700 }}>+10€</strong>
-            </span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 24px', borderRadius: '50px', background: 'rgba(245,240,232,0.05)', border: '1px solid rgba(245,240,232,0.14)' }}>
-            <span style={{ fontSize: '1.05rem' }}>📍</span>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.9rem', color: 'rgba(245,240,232,0.85)' }}>
-              Retrait 10 rue Moreau, 75012 <strong style={{ color: 'rgba(245,240,232,0.95)', fontWeight: 700 }}>+0€</strong>
-            </span>
-          </div>
+        {/* Sélecteur 3 pills */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.2 }}
+          style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: 'clamp(28px,5vh,44px)', flexWrap: 'wrap' }}>
+          {FORMULES.map((f, i) => (
+            <motion.button key={i} onClick={() => setSelected(i)}
+              whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
+              style={{
+                padding: '11px 30px', borderRadius: '50px',
+                background: selected === i ? '#C8883A' : 'transparent',
+                border: `1.5px solid ${selected === i ? '#C8883A' : 'rgba(200,136,58,0.45)'}`,
+                color: selected === i ? '#fff' : 'rgba(30,26,21,0.65)',
+                fontFamily: "'DM Sans',sans-serif", fontWeight: selected === i ? 700 : 400,
+                fontSize: '0.92rem', cursor: 'pointer', transition: 'all 0.28s',
+                letterSpacing: '0.03em', display: 'flex', alignItems: 'center', gap: '7px',
+                boxShadow: selected === i ? '0 6px 24px rgba(200,136,58,0.35)' : 'none',
+              }}>
+              {f.label}
+              {f.popular && <span style={{ fontSize: '0.6rem', opacity: 0.85 }}>★</span>}
+              {f.midnight && <span style={{ fontSize: '0.75rem' }}>🌙</span>}
+            </motion.button>
+          ))}
         </motion.div>
 
-        {/* Laka assurance */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.75, delay: 1.05 }}
-          style={{ marginTop: '32px', borderRadius: '18px', background: 'rgba(200,136,58,0.05)', border: '1px solid rgba(200,136,58,0.2)', padding: '18px 24px', display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}
-        >
-          {/* Icône bouclier */}
-          <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8883A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
+        {/* Carte centrale */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 0.35, ease: [0.16,1,0.3,1] }}>
+          <AnimatePresence mode="wait">
+            <motion.div key={selected}
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.45, ease: [0.16,1,0.3,1] }}
+              style={{
+                position: 'relative', borderRadius: '28px', overflow: 'hidden',
+                height: 'clamp(340px,46vh,500px)',
+                boxShadow: '0 32px 90px rgba(0,0,0,0.48), 0 0 0 1px rgba(200,136,58,0.1)',
+              }}>
 
-          {/* Texte */}
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.92rem', color: '#F5F0E8', margin: '0 0 3px' }}>
-              Assurance partenaire <span style={{ color: '#C8883A' }}>Laka</span>
-            </p>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.8rem', color: 'rgba(245,240,232,0.45)', margin: 0, lineHeight: 1.5 }}>
-              Option disponible à la réservation · Vol, casse accidentelle & assistance urgences (200 €)
-            </p>
-          </div>
+              {/* Photo */}
+              <img src={FORMULES[selected].img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.28) 50%, rgba(0,0,0,0.42) 100%)' }} />
 
-          {/* Prix badge */}
-          <div style={{ flexShrink: 0, padding: '8px 18px', borderRadius: '50px', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)' }}>
-            <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: '1.15rem', color: '#C8883A' }}>+10 €</span>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.72rem', color: 'rgba(245,240,232,0.45)', marginLeft: '4px' }}>/jour</span>
-          </div>
+              {/* Badge Le plus choisi */}
+              {FORMULES[selected].popular && (
+                <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
+                  style={{ position: 'absolute', top: '22px', left: '22px', padding: '7px 16px', borderRadius: '50px', background: 'rgba(200,136,58,0.18)', border: '1px solid rgba(200,136,58,0.55)', backdropFilter: 'blur(10px)' }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: '0.7rem', color: 'rgba(200,136,58,1)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>★ Le plus choisi</span>
+                </motion.div>
+              )}
+
+              {/* Badge 0h00 */}
+              {FORMULES[selected].midnight && (
+                <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
+                  style={{ position: 'absolute', top: '22px', right: '22px', padding: '8px 18px', borderRadius: '50px', background: 'rgba(10,6,2,0.82)', border: '1px solid rgba(200,136,58,0.55)', backdropFilter: 'blur(12px)', boxShadow: '0 0 20px rgba(200,136,58,0.2)' }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.78rem', color: '#C8883A', letterSpacing: '0.08em', display: 'block' }}>🌙 Jusqu'à 0h00</span>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 400, fontSize: '0.65rem', color: 'rgba(200,136,58,0.65)', letterSpacing: '0.06em', display: 'block', marginTop: '2px' }}>moyennant un supplément</span>
+                </motion.div>
+              )}
+
+              {/* Contenu centré */}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }}
+                  style={{ marginBottom: '18px', padding: '7px 20px', borderRadius: '50px', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(255,255,255,0.92)', fontSize: '0.82rem', fontWeight: 600, letterSpacing: '0.12em' }}>
+                    {FORMULES[selected].horaire}
+                  </span>
+                </motion.div>
+                <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.45 }}
+                  style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(5rem,12vw,8rem)', color: '#fff', lineHeight: 1, margin: 0, textAlign: 'center' }}>
+                  {FORMULES[selected].prix}<span style={{ fontSize: '0.42em', color: 'rgba(200,136,58,0.9)', verticalAlign: 'super', marginLeft: '6px' }}>€</span>
+                </motion.p>
+                <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.2, duration: 0.6 }}
+                  style={{ width: '48px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.7), transparent)', margin: '16px 0', transformOrigin: 'center' }} />
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28, duration: 0.5 }}
+                  style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, color: 'rgba(255,255,255,0.88)', fontSize: 'clamp(1.05rem,2vw,1.3rem)', textAlign: 'center', margin: 0, maxWidth: '500px', lineHeight: 1.65 }}>
+                  {FORMULES[selected].desc}
+                </motion.p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Badge minuit permanent — argument de vente */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.55 }}
+          style={{ textAlign: 'center', marginTop: '20px' }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: '9px',
+            padding: '10px 26px', borderRadius: '50px',
+            background: 'rgba(12,8,2,0.8)', border: '1px solid rgba(200,136,58,0.3)',
+            boxShadow: '0 0 28px rgba(200,136,58,0.1)',
+            fontFamily: "'DM Sans',sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.78)', letterSpacing: '0.04em',
+          }}>
+            🌙 <span>Toutes nos formules disponibles <strong style={{ color: 'rgba(200,136,58,0.92)', fontWeight: 700 }}>jusqu'à 0h00</strong> · Possibilité de louer juste une soirée</span>
+          </span>
+        </motion.div>
+
+        {/* Strip livraison · retrait · assurance */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.7 }}
+          style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '10px', marginTop: '28px' }}>
+          {[
+            { icon: '🛵', label: 'Livraison Paris', detail: '+10 €', sub: 'À votre adresse', amber: true },
+            { icon: '📍', label: 'Retrait sur place', detail: 'Gratuit', sub: '10 rue Moreau, 75012', amber: false },
+            { icon: '🛡️', label: 'Assurance Laka', detail: '+10 €/j', sub: 'Vol & casse couverts', amber: true },
+          ].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', textAlign: 'center',
+              padding: '18px 14px', borderRadius: '16px',
+              background: item.amber ? 'rgba(200,136,58,0.07)' : 'rgba(30,26,21,0.05)',
+              border: `1px solid ${item.amber ? 'rgba(200,136,58,0.2)' : 'rgba(30,26,21,0.1)'}`,
+            }}>
+              <span style={{ fontSize: '1.35rem', marginBottom: '3px' }}>{item.icon}</span>
+              <p style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.82rem', color: '#1E1A15', margin: 0 }}>{item.label}</p>
+              <p style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: '1rem', color: item.amber ? '#C8883A' : '#1E1A15', margin: 0 }}>{item.detail}</p>
+              <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.72rem', color: 'rgba(30,26,21,0.4)', margin: 0, lineHeight: 1.4 }}>{item.sub}</p>
+            </div>
+          ))}
         </motion.div>
 
         {/* Note bas */}
-        <motion.p initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 0.95 }}
-          style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', textAlign: 'center', color: 'rgba(245,240,232,0.25)', fontSize: '0.82rem', marginTop: '18px' }}>
-          Antivol inclus · Casques disponibles sur demande · Chargeur fourni pour les locations longue durée
+        <motion.p initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 0.9 }}
+          style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', textAlign: 'center', color: 'rgba(30,26,21,0.25)', fontSize: '0.82rem', marginTop: '22px', marginBottom: 0 }}>
+          Antivol inclus · Casques disponibles sur demande · Chargeur fourni
         </motion.p>
+
       </div>
     </div>
   )
 }
 
-function TarifCard({ tarif, index, isInView, tall = false }) {
+
+/* ─────────────────────────────────────────────
+   BOUTON TÉLÉPHONE PREMIUM
+───────────────────────────────────────────── */
+function PhoneBtn({ label = 'Réserver' }) {
   const [hovered, setHovered] = useState(false)
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.16,1,0.3,1], delay: 0.1 + index * 0.1 }}
+    <motion.a
+      href="tel:0766880542"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      whileHover={{ scale: 1.04, y: -3 }}
+      whileTap={{ scale: 0.97 }}
       style={{
-        position: 'relative', borderRadius: '20px', overflow: 'hidden',
-        height: tall ? 'clamp(240px,30vh,320px)' : 'clamp(200px,26vh,280px)',
-        cursor: 'default',
-        boxShadow: hovered ? '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1.5px rgba(200,136,58,0.5)' : '0 8px 32px rgba(0,0,0,0.4)',
-        transition: 'box-shadow 0.4s, transform 0.4s',
-        transform: hovered ? 'translateY(-4px)' : 'none',
+        display: 'inline-flex', alignItems: 'center', gap: '16px',
+        padding: '16px 38px', borderRadius: '50px',
+        background: hovered ? 'linear-gradient(135deg, #D4923E, #B8721E)' : 'linear-gradient(135deg, #C8883A, #A86C22)',
+        border: '1.5px solid rgba(255,255,255,0.18)',
+        boxShadow: hovered
+          ? '0 0 52px rgba(200,136,58,0.55), 0 10px 36px rgba(160,100,20,0.45)'
+          : '0 4px 24px rgba(160,100,20,0.35)',
+        textDecoration: 'none', cursor: 'pointer',
+        transition: 'border-color 0.35s, box-shadow 0.35s',
+        position: 'relative', overflow: 'hidden',
       }}
     >
-      {/* Image fond */}
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${tarif.img})`, backgroundSize: 'cover', backgroundPosition: 'center', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.6s ease' }} />
-      {/* Overlay dégradé */}
-      <div style={{ position: 'absolute', inset: 0, background: hovered
-        ? 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.15) 100%)'
-        : 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)',
-        transition: 'background 0.4s' }} />
-
-      {/* Contenu */}
-      <div style={{ position: 'absolute', inset: 0, padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-        {tarif.horaire && (
-          <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.65rem', color: 'rgba(200,136,58,0.85)', textTransform: 'uppercase', letterSpacing: '0.18em', marginBottom: '6px' }}>{tarif.horaire}</span>
-        )}
-        <p style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(0.95rem,1.8vw,1.15rem)', color: '#F5F0E8', margin: '0 0 4px', lineHeight: 1.2 }}>{tarif.label}</p>
-        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.90)', margin: '0 0 12px', fontWeight: 500 }}>{tarif.detail}</p>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-          <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2.2rem,4vw,3rem)', color: '#C8883A', lineHeight: 1 }}>{tarif.prix}</span>
-          <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: '1.1rem', color: 'rgba(200,136,58,0.7)' }}>€</span>
-        </div>
+      {/* Shimmer sweep */}
+      <motion.div
+        animate={hovered ? { x: ['−120%', '220%'] } : { x: '-120%' }}
+        transition={{ duration: 0.75, ease: 'easeOut' }}
+        style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(200,136,58,0.18) 50%, transparent 100%)',
+          width: '60%',
+        }}
+      />
+      {/* Icône téléphone — vibre au hover */}
+      <motion.div
+        animate={hovered ? { rotate: [0, -18, 18, -12, 12, -6, 6, 0] } : { rotate: 0 }}
+        transition={{ duration: 0.55, ease: 'easeInOut' }}
+        style={{ flexShrink: 0 }}
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.95)" strokeWidth="2.2" strokeLinecap="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+      </motion.div>
+      {/* Texte deux lignes */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 400, fontSize: '0.62rem', color: 'rgba(255,255,255,0.72)', textTransform: 'uppercase', letterSpacing: '0.22em', lineHeight: 1 }}>
+          {label}
+        </span>
+        <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '1.02rem', color: '#fff', letterSpacing: '0.06em', lineHeight: 1.2 }}>
+          07 66 88 05 42
+        </span>
       </div>
-    </motion.div>
+    </motion.a>
   )
 }
-
 
 /* ─────────────────────────────────────────────
    SECTION 4 — COMMENT RÉSERVER
@@ -879,15 +1085,15 @@ function Section4({ sectionRef }) {
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
 
   return (
-    <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #080710 0%, #0C0B15 100%)', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '20%', left: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(200,136,58,0.1) 0%, rgba(110,45,160,0.06) 50%, transparent 70%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
+    <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #EDEAE3 0%, #FAF8F4 100%)', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '20%', left: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(200,136,58,0.06) 0%, rgba(200,136,58,0.02) 50%, transparent 70%)', filter: 'blur(55px)', pointerEvents: 'none' }} />
       <div ref={innerRef} style={{ maxWidth: '900px', margin: '0 auto' }}>
 
         {/* Titre */}
         <motion.div initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,80px)' }}>
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Simple & rapide</p>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#F5F0E8', margin: 0 }}>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: 0 }}>
             Comment <em style={{ color: 'rgba(200,136,58,0.9)' }}>réserver</em>
           </h2>
         </motion.div>
@@ -917,8 +1123,8 @@ function Section4({ sectionRef }) {
 
               {/* Texte */}
               <div style={{ paddingTop: '6px' }}>
-                <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.1rem,2vw,1.4rem)', color: '#F5F0E8', margin: '0 0 10px', lineHeight: 1.2 }}>{step.title}</h3>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.6)', fontSize: 'clamp(0.9rem,1.4vw,1.02rem)', lineHeight: 1.65, margin: 0 }}>{step.text}</p>
+                <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.1rem,2vw,1.4rem)', color: '#1E1A15', margin: '0 0 10px', lineHeight: 1.2 }}>{step.title}</h3>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.6)', fontSize: 'clamp(0.9rem,1.4vw,1.02rem)', lineHeight: 1.65, margin: 0 }}>{step.text}</p>
               </div>
             </motion.div>
           ))}
@@ -927,12 +1133,7 @@ function Section4({ sectionRef }) {
         {/* CTA final */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.8 }}
           style={{ textAlign: 'center', marginTop: 'clamp(48px,8vh,80px)' }}>
-          <a href="tel:0766880542" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '16px 40px', borderRadius: '50px', background: 'linear-gradient(135deg,#C8883A,#A06A22)', textDecoration: 'none', boxShadow: '0 0 40px rgba(200,136,58,0.35)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F0E17" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-            </svg>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '1rem', color: '#0F0E17', letterSpacing: '0.04em' }}>Réserver — 07 66 88 05 42</span>
-          </a>
+          <PhoneBtn label="Réserver" />
         </motion.div>
 
       </div>
@@ -947,16 +1148,17 @@ function Section4({ sectionRef }) {
 function Section5({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
+  const isMobile = useIsMobile()
 
   return (
-    <div ref={sectionRef} style={{ position: 'relative', background: '#09081A', overflow: 'hidden', padding: 'clamp(80px,14vh,140px) clamp(24px,5vw,80px)' }}>
-      <div style={{ position: 'absolute', top: '-5%', right: '-5%', width: '750px', height: '750px', background: 'radial-gradient(circle, rgba(200,130,40,0.15) 0%, rgba(155,85,20,0.06) 45%, transparent 70%)', filter: 'blur(65px)', pointerEvents: 'none' }} />
+    <div ref={sectionRef} style={{ position: 'relative', background: '#F3EFE8', overflow: 'hidden', padding: 'clamp(80px,14vh,140px) clamp(24px,5vw,80px)' }}>
+      <div style={{ position: 'absolute', top: '-5%', right: '-5%', width: '750px', height: '750px', background: 'radial-gradient(circle, rgba(200,130,40,0.07) 0%, rgba(155,85,20,0.04) 45%, transparent 70%)', filter: 'blur(65px)', pointerEvents: 'none' }} />
 
-      {/* Vélo en filigrane */}
-      <img src={veloFront} alt="" aria-hidden style={{ position: 'absolute', right: '-4%', top: '50%', transform: 'translateY(-50%)', width: 'clamp(280px,36vw,520px)', opacity: 0.04, pointerEvents: 'none', userSelect: 'none' }} />
+      {/* Vélo en filigrane — caché sur mobile */}
+      {!isMobile && <img src={veloFront} alt="" aria-hidden style={{ position: 'absolute', right: '-4%', top: '50%', transform: 'translateY(-50%)', width: 'clamp(280px,36vw,520px)', opacity: 0.04, pointerEvents: 'none', userSelect: 'none' }} />}
 
       {/* Grand guillemet décoratif */}
-      <div style={{ position: 'absolute', top: 'clamp(30px,6vh,60px)', left: 'clamp(24px,5vw,80px)', fontFamily: "'Playfair Display',serif", fontSize: 'clamp(80px,14vw,160px)', color: 'rgba(200,136,58,0.07)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>"</div>
+      <div style={{ position: 'absolute', top: 'clamp(30px,6vh,60px)', left: 'clamp(24px,5vw,80px)', fontFamily: "'Playfair Display',serif", fontSize: 'clamp(80px,14vw,160px)', color: 'rgba(200,136,58,0.12)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>"</div>
 
       <div ref={innerRef} style={{ maxWidth: '820px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
@@ -969,7 +1171,7 @@ function Section5({ sectionRef }) {
         {/* Titre */}
         <motion.h2
           initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }}
-          style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.9rem,4vw,3.2rem)', color: '#F5F0E8', lineHeight: 1.18, margin: '0 0 clamp(32px,5vh,52px)' }}
+          style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.9rem,4vw,3.2rem)', color: '#1E1A15', lineHeight: 1.18, margin: '0 0 clamp(32px,5vh,52px)' }}
         >
           Testez les sensations du Fat Bike<br />
           <em style={{ color: 'rgba(200,136,58,0.9)' }}>avant d'en acheter un !</em>
@@ -982,8 +1184,8 @@ function Section5({ sectionRef }) {
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
-            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(245,240,232,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.
+            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
+              Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.
             </p>
           </div>
         </motion.div>
@@ -1001,8 +1203,8 @@ function Section5({ sectionRef }) {
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
-            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(245,240,232,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(245,240,232,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
+              En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em>
             </p>
           </div>
         </motion.div>
@@ -1010,15 +1212,10 @@ function Section5({ sectionRef }) {
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.6 }}
-          style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}
+          style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '14px' : '20px' }}
         >
-          <a href="tel:0766880542" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '14px 32px', borderRadius: '50px', background: 'linear-gradient(135deg,#C8883A,#A06A22)', textDecoration: 'none', boxShadow: '0 0 32px rgba(200,136,58,0.3)' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0F0E17" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-            </svg>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.98rem', color: '#0F0E17' }}>Réserver mon test — 07 66 88 05 42</span>
-          </a>
-          <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(245,240,232,0.35)', fontSize: '0.82rem', margin: 0 }}>
+          <PhoneBtn label="Réserver mon test" />
+          <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(30,26,21,0.35)', fontSize: '0.82rem', margin: 0 }}>
             Conseil d'achat inclus après votre test
           </p>
         </motion.div>
