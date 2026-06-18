@@ -16,7 +16,7 @@ const FRAMES = [
   { src: imgApresMidi, time: '14h30', label: 'En journée' },
   { src: imgVelo,      time: null,    label: null },
 ]
-const TIMINGS = [2200, 4200, 6200, 7900]
+const TIMINGS = [1400, 2600, 3800, 5000]
 
 const POINTS = [
   { icon: '◷',  text: 'Location de 2h à 14 jours selon vos envies' },
@@ -168,7 +168,7 @@ export default function Home() {
 
         <AnimatePresence>
           {phase < 3 && (
-            <motion.div key="phrase" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 1.2 }}
+            <motion.div key="phrase" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 1.2 }}
               style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', padding: '0 32px', textAlign: 'center' }}>
               <div>
                 <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(2rem,5vw,4rem)', color: 'rgba(255,255,255,0.9)', lineHeight: 1.25, textShadow: '0 2px 40px rgba(0,0,0,0.7)' }}>Visiter Paris à vélo</p>
@@ -206,7 +206,7 @@ export default function Home() {
           {heroReady && (
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 'clamp(28px,7vh,60px)', gap: '14px' }}>
               <motion.button
-                initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16,1,0.3,1], delay: 1.15 }}
+                initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16,1,0.3,1], delay: 1.15 }}
                 onClick={() => sectionBiplaceRef.current?.scrollIntoView({ behavior: 'smooth' })}
                 onMouseEnter={() => setBtnHovered(true)} onMouseLeave={() => setBtnHovered(false)}
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
@@ -362,7 +362,7 @@ function SectionFAQ() {
 
         {/* Titre */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,72px)' }}
         >
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>
@@ -380,7 +380,7 @@ function SectionFAQ() {
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.55, delay: 0.05 + i * 0.07 }}
                 style={{
@@ -623,7 +623,7 @@ function SectionBiplace({ sectionRef }) {
 
           {/* Image velo sur les quais — carte retournable */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1.1, ease: [0.16,1,0.3,1], delay: 0.18 }}
             style={{ position: 'relative' }}
@@ -713,7 +713,7 @@ function SectionBiplace({ sectionRef }) {
 
           {/* Texte droite */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-            <motion.div initial={{ opacity: 0, y: 28 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.28 }}>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.28 }}>
               <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '16px' }}>
                 Notre vélo
               </p>
@@ -733,7 +733,7 @@ function SectionBiplace({ sectionRef }) {
               {features.map((feat, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: 28 }}
+                  initial={{ opacity: 0, x: 12 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.65, delay: 0.5 + i * 0.13 }}
                   style={{ display: 'flex', alignItems: 'flex-start', gap: '18px' }}
@@ -777,7 +777,7 @@ function Section2({ sectionRef, prixRef }) {
 
         {/* Texte */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', order: isMobile ? 2 : 1 }}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.15 }}>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.15 }}>
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.8)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.22em', marginBottom: '12px' }}>Notre offre</p>
             <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#1E1A15', lineHeight: 1.2, margin: 0 }}>
               Louer votre fat bike<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>biplace</span>
@@ -789,7 +789,7 @@ function Section2({ sectionRef, prixRef }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {POINTS.map((pt, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: 24 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.35 + i * 0.1 }}
+              <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.35 + i * 0.1 }}
                 style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '1rem' }}>{pt.icon}</div>
                 <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.85)', fontSize: 'clamp(0.9rem,1.5vw,1.05rem)', lineHeight: 1.55, margin: 0, paddingTop: '6px' }}>{pt.text}</p>
@@ -798,7 +798,7 @@ function Section2({ sectionRef, prixRef }) {
           </div>
 
           {/* CTA : téléphone + voir les prix */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.9 }}
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.9 }}
             style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <a href="tel:0766880542" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '13px 26px', borderRadius: '50px', background: 'linear-gradient(135deg, rgba(200,136,58,0.18), rgba(200,136,58,0.08))', border: '1.5px solid rgba(200,136,58,0.6)', textDecoration: 'none' }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(200,136,58,0.9)" strokeWidth="2" strokeLinecap="round">
@@ -879,7 +879,7 @@ function Section3({ sectionRef }) {
       <div ref={innerRef} style={{ maxWidth: '860px', margin: '0 auto' }}>
 
         {/* Titre */}
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(36px,6vh,52px)' }}>
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Tarifs</p>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: '0 0 14px' }}>
@@ -891,7 +891,7 @@ function Section3({ sectionRef }) {
         </motion.div>
 
         {/* Sélecteur 3 pills */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.2 }}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.2 }}
           style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: 'clamp(28px,5vh,44px)', flexWrap: 'wrap' }}>
           {FORMULES.map((f, i) => (
             <motion.button key={i} onClick={() => setSelected(i)}
@@ -914,7 +914,7 @@ function Section3({ sectionRef }) {
         </motion.div>
 
         {/* Carte centrale */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 0.35, ease: [0.16,1,0.3,1] }}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, delay: 0.35, ease: [0.16,1,0.3,1] }}>
           <AnimatePresence mode="wait">
             <motion.div key={selected}
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -986,7 +986,7 @@ function Section3({ sectionRef }) {
         </motion.div>
 
         {/* Strip livraison · retrait · assurance */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.7 }}
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.7 }}
           style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '10px', marginTop: '28px' }}>
           {[
             { icon: '🛵', label: 'Livraison Paris', detail: '+10 €', sub: 'À votre adresse', amber: true },
@@ -1090,7 +1090,7 @@ function Section4({ sectionRef }) {
       <div ref={innerRef} style={{ maxWidth: '900px', margin: '0 auto' }}>
 
         {/* Titre */}
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,80px)' }}>
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Simple & rapide</p>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: 0 }}>
@@ -1103,7 +1103,7 @@ function Section4({ sectionRef }) {
           {STEPS.map((step, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, x: -32 }}
+              initial={{ opacity: 0, x: -14 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 + i * 0.15 }}
               style={{ display: 'flex', gap: 'clamp(24px,4vw,48px)', alignItems: 'flex-start', paddingBottom: i < STEPS.length - 1 ? '40px' : 0, position: 'relative' }}
@@ -1131,7 +1131,7 @@ function Section4({ sectionRef }) {
         </div>
 
         {/* CTA final */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.8 }}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.8 }}
           style={{ textAlign: 'center', marginTop: 'clamp(48px,8vh,80px)' }}>
           <PhoneBtn label="Réserver" />
         </motion.div>
@@ -1164,13 +1164,13 @@ function Section5({ sectionRef }) {
 
         {/* Eyebrow */}
         <motion.p
-          initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}
+          initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}
           style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '20px' }}
         >Louer avant d'acheter</motion.p>
 
         {/* Titre */}
         <motion.h2
-          initial={{ opacity: 0, y: 24 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }}
+          initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }}
           style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.9rem,4vw,3.2rem)', color: '#1E1A15', lineHeight: 1.18, margin: '0 0 clamp(32px,5vh,52px)' }}
         >
           Testez les sensations du Fat Bike<br />
@@ -1179,7 +1179,7 @@ function Section5({ sectionRef }) {
 
         {/* Paragraphe 1 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.75, delay: 0.22 }}
+          initial={{ opacity: 0, y: 8 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.75, delay: 0.22 }}
           style={{ marginBottom: '32px' }}
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
@@ -1198,7 +1198,7 @@ function Section5({ sectionRef }) {
 
         {/* Paragraphe 2 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.75, delay: 0.45 }}
+          initial={{ opacity: 0, y: 8 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.75, delay: 0.45 }}
           style={{ marginBottom: 'clamp(40px,7vh,64px)' }}
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
@@ -1211,7 +1211,7 @@ function Section5({ sectionRef }) {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.6 }}
+          initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.6 }}
           style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '14px' : '20px' }}
         >
           <PhoneBtn label="Réserver mon test" />
