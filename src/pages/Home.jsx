@@ -112,7 +112,11 @@ export default function Home() {
   const timersRef = useRef([])
 
   useEffect(() => {
-    const srcs = [imgNuit, imgMatin, imgApresMidi, imgVelo]
+    const mobile = window.innerWidth < 768
+    const srcs = mobile
+      ? [imgApresMidi, imgVelo]
+      : [imgNuit, imgMatin, imgApresMidi, imgVelo]
+
     const preloads = srcs.map(src => new Promise(resolve => {
       const img = new Image()
       img.onload = resolve
@@ -121,12 +125,20 @@ export default function Home() {
     }))
 
     Promise.all(preloads).then(() => {
-      timersRef.current = [
-        setTimeout(() => setPhase(1), TIMINGS[0]),
-        setTimeout(() => setPhase(2), TIMINGS[1]),
-        setTimeout(() => setPhase(3), TIMINGS[2]),
-        setTimeout(() => setHeroReady(true), TIMINGS[3]),
-      ]
+      if (mobile) {
+        setPhase(2)
+        timersRef.current = [
+          setTimeout(() => setPhase(3), 1800),
+          setTimeout(() => setHeroReady(true), 2800),
+        ]
+      } else {
+        timersRef.current = [
+          setTimeout(() => setPhase(1), TIMINGS[0]),
+          setTimeout(() => setPhase(2), TIMINGS[1]),
+          setTimeout(() => setPhase(3), TIMINGS[2]),
+          setTimeout(() => setHeroReady(true), TIMINGS[3]),
+        ]
+      }
     })
 
     return () => timersRef.current.forEach(clearTimeout)
@@ -423,7 +435,7 @@ function SectionFAQ() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.32, ease: [0.16,1,0.3,1] }}
+                      transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
                       style={{ overflow: 'hidden' }}
                     >
                       <div style={{ padding: '0 24px 22px', paddingLeft: '24px' }}>
@@ -521,7 +533,7 @@ function MobileNav({ items }) {
         <motion.span
           animate={{ opacity: open ? 0 : 1, x: open ? 6 : 0 }}
           transition={{ duration: 0.2 }}
-          style={{ display: 'block', width: '12px', height: '1.5px', background: 'rgba(200,136,58,0.85)', borderRadius: '1px', alignSelf: 'flex-end', marginRight: '3px' }}
+          style={{ display: 'block', width: '12px', height: '1.5px', background: 'rgba(200,136,58,0.85)', borderRadius: '1px', marginLeft: '5px' }}
         />
         <motion.span
           animate={{ rotate: open ? -45 : 0, y: open ? -6.5 : 0 }}
