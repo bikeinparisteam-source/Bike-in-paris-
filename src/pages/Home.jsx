@@ -23,7 +23,7 @@ const POINTS = [
   { icon: '📞', text: 'Vérifiez les disponibilités et réservez par téléphone' },
   { icon: '🚲', text: 'Livraison dans Paris ou retrait sur place (10 rue Moreau, Paris 12e)' },
   { icon: '🔒', text: 'Antivol fourni avec chaque location' },
-  { icon: '🗺', text: 'Découvrez Paris, faites des pauses, vivez à votre rythme' },
+  { icon: '🗺', text: 'Découvrez Paris, faites des pauses, vivez à votre rythme', textMobile: 'Découvrez Paris, vivez à votre rythme' },
 ]
 
 const TARIFS = [
@@ -36,9 +36,9 @@ const TARIFS = [
 
 const STEPS = [
   { num: '01', icon: '📞', title: 'Réservation par téléphone', text: 'Appelez-nous pour vérifier les disponibilités et bloquer votre créneau en quelques minutes.' },
-  { num: '02', icon: '🚲', title: 'On vous livre ou vous venez sur place', text: 'Livraison à votre adresse dans Paris, ou retrait directement au 10 rue Moreau, Paris 12ème.' },
+  { num: '02', icon: '🚲', title: 'On vous livre ou vous venez sur place', text: 'Livraison à votre adresse dans Paris, ou retrait directement au 10 rue Moreau, Paris 12ème.', textMobile: 'Livraison à votre adresse dans Paris, ou retrait au 10 rue Moreau, 75012.' },
   { num: '03', icon: '🪪', title: 'Caution et paiement', text: "Remettez votre pièce d'identité en guise de caution. Règlement par carte ou en espèces." },
-  { num: '04', icon: '✨', title: 'Profitez de Paris', text: "Enfourchez votre fat bike biplace et partez explorer la capitale à votre rythme, sans contrainte." },
+  { num: '04', icon: '✨', title: 'Profitez de Paris', text: "Enfourchez votre fat bike biplace et partez explorer la capitale à votre rythme, sans contrainte.", textMobile: "Partez explorer la capitale à votre rythme, sans contrainte." },
 ]
 
 const FAQ_ITEMS = [
@@ -794,9 +794,9 @@ function SectionBiplace({ sectionRef }) {
   const isMobile = useIsMobile()
 
   const features = [
-    { icon: '🛋️', label: 'Confortable', spec: null,    desc: 'Selle biplace ergonomique et amortissement optimal pour deux passagers.' },
-    { icon: '⚡', label: 'Puissant',    spec: '400W',  desc: 'Moteur électrique haute performance pour gravir les côtes parisiennes sans effort.' },
-    { icon: '🔋', label: 'Grande autonomie', spec: '22 Ah', desc: 'Batterie longue durée pour explorer Paris du matin jusqu\'au soir.' },
+    { icon: '🛋️', label: 'Confortable',     spec: null,    desc: 'Selle biplace ergonomique et amortissement optimal pour deux passagers.',                        descMobile: 'Selle biplace, vous pouvez être 2 !' },
+    { icon: '⚡', label: 'Puissant',         spec: '400W',  desc: 'Moteur électrique haute performance pour gravir les côtes parisiennes sans effort.',              descMobile: 'Gravissez toutes les côtes de Paris !' },
+    { icon: '🔋', label: 'Grande autonomie', spec: '22 Ah', desc: 'Batterie longue durée pour explorer Paris du matin jusqu\'au soir.',                             descMobile: 'Explorez Paris du matin jusqu\'au soir !' },
   ]
 
   return (
@@ -937,7 +937,7 @@ function SectionBiplace({ sectionRef }) {
                       {feat.label}
                       {feat.spec && <span style={{ color: '#C8883A', marginLeft: '8px', fontStyle: 'normal' }}>{feat.spec}</span>}
                     </p>
-                    {!isMobile && <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{feat.desc}</p>}
+                    <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{isMobile ? feat.descMobile : feat.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -983,7 +983,7 @@ function Section2({ sectionRef, prixRef }) {
               <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.35 + i * 0.1 }}
                 style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '1rem' }}>{pt.icon}</div>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.85)', fontSize: 'clamp(0.9rem,1.5vw,1.05rem)', lineHeight: 1.55, margin: 0, paddingTop: '6px' }}>{pt.text}</p>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.85)', fontSize: 'clamp(0.9rem,1.5vw,1.05rem)', lineHeight: 1.55, margin: 0, paddingTop: '6px' }}>{isMobile && pt.textMobile ? pt.textMobile : pt.text}</p>
               </motion.div>
             ))}
           </div>
@@ -1274,6 +1274,7 @@ function PhoneBtn({ label = 'Réserver' }) {
 function Section4({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
+  const isMobile = useIsMobile()
 
   return (
     <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #EDEAE3 0%, #FAF8F4 100%)', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
@@ -1315,7 +1316,7 @@ function Section4({ sectionRef }) {
               {/* Texte */}
               <div style={{ paddingTop: '6px' }}>
                 <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.1rem,2vw,1.4rem)', color: '#1E1A15', margin: '0 0 10px', lineHeight: 1.2 }}>{step.title}</h3>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.6)', fontSize: 'clamp(0.9rem,1.4vw,1.02rem)', lineHeight: 1.65, margin: 0 }}>{step.text}</p>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.6)', fontSize: 'clamp(0.9rem,1.4vw,1.02rem)', lineHeight: 1.65, margin: 0 }}>{isMobile && step.textMobile ? step.textMobile : step.text}</p>
               </div>
             </motion.div>
           ))}
@@ -1377,7 +1378,7 @@ function Section5({ sectionRef }) {
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
               {isMobile
-                ? <>Testez les vraies sensations du Fat Bike dans Paris avant d'acheter — <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>c'est la meilleure façon d'être sûr de votre choix.</strong></>
+                ? <>Certains de nos clients testent les sensations du Fat Bike avec nous avant d'en acheter un — <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>c'est la meilleure façon d'être sûr de votre choix.</strong></>
                 : <>Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.</>
               }
             </p>
@@ -1399,7 +1400,7 @@ function Section5({ sectionRef }) {
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
               {isMobile
-                ? <>On vous conseille ensuite objectivement : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>marques, puissance, autonomie, pièges à éviter</strong> — pour acheter le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait.</em></>
+                ? <>On vous conseille ensuite objectivement : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>marques, puissance, autonomie, pièges à éviter</strong> — pour acheter le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike qui vous correspond.</em></>
                 : <>En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em></>
               }
             </p>
