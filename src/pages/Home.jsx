@@ -259,7 +259,7 @@ export default function Home() {
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
           {/* Ligne principale */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '32px', marginBottom: '36px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row', justifyContent: isMobile ? 'flex-start' : 'space-between', gap: isMobile ? '24px' : '32px', marginBottom: '36px' }}>
 
             {/* Identité */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
