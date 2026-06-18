@@ -145,6 +145,7 @@ export default function Home() {
 
       {/* ══════════ NAVIGATION FIXE ══════════ */}
       <NavHeader items={NAV_ITEMS} />
+      <MobileNav items={NAV_ITEMS} />
 
       {/* ══════════ SECTION 1 — HÉRO ══════════ */}
       <div ref={heroRef} onMouseMove={onMouseMove}
@@ -467,6 +468,182 @@ function SectionFAQ() {
 
 
 /* ─────────────────────────────────────────────
+   MOBILE NAV — Burger + drawer latéral
+───────────────────────────────────────────── */
+function MobileNav({ items }) {
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const isMobile = useIsMobile()
+
+  useEffect(() => {
+    const update = () => {
+      const dists = items.map(({ ref }) =>
+        ref?.current ? Math.abs(ref.current.getBoundingClientRect().top) : Infinity
+      )
+      const nearest = Math.min(...dists)
+      if (isFinite(nearest)) setActive(dists.indexOf(nearest))
+    }
+    window.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => window.removeEventListener('scroll', update)
+  }, [items])
+
+  if (!isMobile) return null
+
+  const handleNav = (ref) => {
+    ref?.current?.scrollIntoView({ behavior: 'smooth' })
+    setOpen(false)
+  }
+
+  return (
+    <>
+      {/* Bouton hamburger */}
+      <motion.button
+        onClick={() => setOpen(o => !o)}
+        aria-label="Menu navigation"
+        style={{
+          position: 'fixed', top: '16px', right: '16px', zIndex: 200,
+          width: '44px', height: '44px', borderRadius: '50%',
+          background: open ? 'rgba(200,136,58,0.18)' : 'rgba(10,7,4,0.58)',
+          backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)',
+          border: `1.5px solid ${open ? 'rgba(200,136,58,0.72)' : 'rgba(200,136,58,0.32)'}`,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          gap: '5px', cursor: 'pointer', padding: 0,
+          boxShadow: open ? '0 0 22px rgba(200,136,58,0.28)' : '0 4px 20px rgba(0,0,0,0.38)',
+          transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s',
+        }}
+      >
+        <motion.span
+          animate={{ rotate: open ? 45 : 0, y: open ? 6.5 : 0 }}
+          transition={{ duration: 0.3 }}
+          style={{ display: 'block', width: '18px', height: '1.5px', background: 'rgba(245,240,232,0.92)', borderRadius: '1px', transformOrigin: 'center' }}
+        />
+        <motion.span
+          animate={{ opacity: open ? 0 : 1, x: open ? 6 : 0 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: 'block', width: '12px', height: '1.5px', background: 'rgba(200,136,58,0.85)', borderRadius: '1px', alignSelf: 'flex-end', marginRight: '3px' }}
+        />
+        <motion.span
+          animate={{ rotate: open ? -45 : 0, y: open ? -6.5 : 0 }}
+          transition={{ duration: 0.3 }}
+          style={{ display: 'block', width: '18px', height: '1.5px', background: 'rgba(245,240,232,0.92)', borderRadius: '1px', transformOrigin: 'center' }}
+        />
+      </motion.button>
+
+      {/* Overlay */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="mob-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            transition={{ duration: 0.3 }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.54)', zIndex: 175, backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Drawer */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="mob-drawer"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'fixed', top: 0, right: 0, bottom: 0,
+              width: 'min(78vw, 300px)',
+              zIndex: 195,
+              background: 'linear-gradient(158deg, #1D1508 0%, #0E0A05 100%)',
+              borderLeft: '1px solid rgba(200,136,58,0.16)',
+              boxShadow: '-24px 0 80px rgba(0,0,0,0.58)',
+              display: 'flex', flexDirection: 'column',
+              padding: '72px 28px 40px',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Orbs ambre décoratifs */}
+            <div style={{ position: 'absolute', top: '-15%', right: '-25%', width: '280px', height: '280px', background: 'radial-gradient(circle, rgba(200,136,58,0.15) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '8%', left: '-20%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(200,100,30,0.09) 0%, transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+
+            {/* Logo */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
+              <img src={logoVelo} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain', opacity: 0.85 }} />
+              <span style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontSize: '0.88rem', color: 'rgba(200,136,58,0.72)', letterSpacing: '0.06em' }}>Bike in Paris</span>
+            </div>
+
+            {/* Eyebrow */}
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.58rem', color: 'rgba(200,136,58,0.42)', textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '18px', margin: '0 0 18px' }}>
+              Navigation
+            </p>
+
+            {/* Items */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
+              {items.map((item, i) => {
+                const isActive = i === active
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 18 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.06 + i * 0.055, duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+                    onClick={() => handleNav(item.ref)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '16px',
+                      padding: '13px 14px', borderRadius: '12px', cursor: 'pointer',
+                      background: isActive ? 'rgba(200,136,58,0.08)' : 'transparent',
+                      border: `1px solid ${isActive ? 'rgba(200,136,58,0.2)' : 'transparent'}`,
+                      transition: 'all 0.22s',
+                    }}
+                  >
+                    <div style={{
+                      width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
+                      background: isActive ? '#C8883A' : 'rgba(200,136,58,0.2)',
+                      boxShadow: isActive ? '0 0 10px rgba(200,136,58,0.65)' : 'none',
+                      transition: 'all 0.22s',
+                    }} />
+                    <span style={{
+                      fontFamily: isActive ? "'Playfair Display',serif" : "'DM Sans',sans-serif",
+                      fontStyle: isActive ? 'italic' : 'normal',
+                      fontWeight: isActive ? 700 : 400,
+                      fontSize: isActive ? '1.08rem' : '0.9rem',
+                      color: isActive ? '#C8883A' : 'rgba(245,240,232,0.46)',
+                      transition: 'all 0.22s',
+                    }}>
+                      {item.label}
+                    </span>
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            {/* Footer téléphone */}
+            <div style={{ borderTop: '1px solid rgba(200,136,58,0.1)', paddingTop: '22px' }}>
+              <a href="tel:0766880542" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(200,136,58,0.1)', border: '1px solid rgba(200,136,58,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,136,58,0.8)" strokeWidth="2" strokeLinecap="round">
+                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p style={{ margin: '0 0 3px', fontFamily: "'DM Sans',sans-serif", fontSize: '0.6rem', color: 'rgba(200,136,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.18em', lineHeight: 1 }}>Réserver</p>
+                  <p style={{ margin: 0, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: '0.88rem', color: 'rgba(245,240,232,0.62)', letterSpacing: '0.04em' }}>07 66 88 05 42</p>
+                </div>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
+
+
+/* ─────────────────────────────────────────────
    NAV HEADER — Ligne + cercles + logo glissant
 ───────────────────────────────────────────── */
 function NavHeader({ items }) {
@@ -486,6 +663,8 @@ function NavHeader({ items }) {
     update()
     return () => window.removeEventListener('scroll', update)
   }, [items])
+
+  if (isMobile) return null
 
   return (
     <div
@@ -746,7 +925,7 @@ function SectionBiplace({ sectionRef }) {
                       {feat.label}
                       {feat.spec && <span style={{ color: '#C8883A', marginLeft: '8px', fontStyle: 'normal' }}>{feat.spec}</span>}
                     </p>
-                    <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{feat.desc}</p>
+                    {!isMobile && <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.52)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{feat.desc}</p>}
                   </div>
                 </motion.div>
               ))}
@@ -1185,7 +1364,10 @@ function Section5({ sectionRef }) {
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.
+              {isMobile
+                ? <>Testez les vraies sensations du Fat Bike dans Paris avant d'acheter — <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>c'est la meilleure façon d'être sûr de votre choix.</strong></>
+                : <>Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.</>
+              }
             </p>
           </div>
         </motion.div>
@@ -1204,7 +1386,10 @@ function Section5({ sectionRef }) {
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
             <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em>
+              {isMobile
+                ? <>On vous conseille ensuite objectivement : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>marques, puissance, autonomie, pièges à éviter</strong> — pour acheter le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait.</em></>
+                : <>En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em></>
+              }
             </p>
           </div>
         </motion.div>
