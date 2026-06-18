@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../context/LanguageContext'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 import imgNuit from '../assets/fond-nuit.jpg'
 import imgMatin from '../assets/fond-matin.jpg'
 import imgApresMidi from '../assets/fond-apres-midi.jpg'
@@ -100,14 +102,17 @@ export default function Home() {
   const section5Ref       = useRef(null)
   const navigate = useNavigate()
 
+  const { t } = useLanguage()
+
   const NAV_ITEMS = useMemo(() => [
-    { label: 'Accueil',     ref: heroRef },
-    { label: 'Expérience',  ref: sectionBiplaceRef },
-    { label: 'Le Fat Bike', ref: section2Ref },
-    { label: 'Tarifs',      ref: section3Ref },
-    { label: 'Réserver',    ref: section4Ref },
-    { label: 'Tester',      ref: section5Ref },
-  ], [])
+    { label: t.nav.home,       ref: heroRef },
+    { label: t.nav.experience, ref: sectionBiplaceRef },
+    { label: t.nav.fatbike,    ref: section2Ref },
+    { label: t.nav.tarifs,     ref: section3Ref },
+    { label: t.nav.reserver,   ref: section4Ref },
+    { label: t.nav.tester,     ref: section5Ref },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [t])
 
   const timersRef = useRef([])
 
@@ -184,8 +189,8 @@ export default function Home() {
             <motion.div key="phrase" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 1.2 }}
               style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', padding: '0 32px', textAlign: 'center' }}>
               <div>
-                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(2rem,5vw,4rem)', color: 'rgba(255,255,255,0.9)', lineHeight: 1.25, textShadow: '0 2px 40px rgba(0,0,0,0.7)' }}>Visiter Paris à vélo</p>
-                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontSize: 'clamp(1.4rem,3.2vw,2.6rem)', color: 'rgba(255,255,255,0.9)', marginTop: '4px', textShadow: '0 2px 30px rgba(0,0,0,0.6)', textDecoration: 'underline', textDecorationColor: 'rgba(200,136,58,0.85)', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>à toute heure</p>
+                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(2rem,5vw,4rem)', color: 'rgba(255,255,255,0.9)', lineHeight: 1.25, textShadow: '0 2px 40px rgba(0,0,0,0.7)' }}>{t.hero.line1}</p>
+                <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontSize: 'clamp(1.4rem,3.2vw,2.6rem)', color: 'rgba(255,255,255,0.9)', marginTop: '4px', textShadow: '0 2px 30px rgba(0,0,0,0.6)', textDecoration: 'underline', textDecorationColor: 'rgba(200,136,58,0.85)', textUnderlineOffset: '6px', textDecorationThickness: '2px' }}>{t.hero.line2}</p>
               </div>
             </motion.div>
           )}
@@ -210,7 +215,7 @@ export default function Home() {
                 style={{ width: 'clamp(48px,6vw,80px)', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.65), transparent)', marginBottom: '12px' }} />
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.3, delay: 0.85 }}
                 style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, color: 'rgba(245,240,232,0.92)', fontSize: 'clamp(1.1rem,2.2vw,1.5rem)', textShadow: '0 2px 20px rgba(0,0,0,0.6)', textDecoration: 'underline', textDecorationColor: 'rgba(200,136,58,0.85)', textUnderlineOffset: '6px', textDecorationThickness: '1.5px' }}>
-                Paris s'explore autrement
+                {t.hero.subtitle}
               </motion.p>
             </div>
           )}
@@ -233,10 +238,10 @@ export default function Home() {
                   fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700,
                   fontSize: 'clamp(1rem,1.9vw,1.2rem)', color: 'rgba(255,255,255,0.95)', letterSpacing: '0.04em',
                   textShadow: btnHovered ? '0 0 20px rgba(200,136,58,0.5)' : '0 1px 8px rgba(0,0,0,0.4)',
-                }}>Découvrir</motion.button>
+                }}>{t.hero.cta}</motion.button>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 1.55 }}
                 style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(0.78rem,1.3vw,0.95rem)', textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}>
-                Livraison à Paris · Retrait 12ème arrondissement
+                {t.hero.delivery}
               </motion.p>
             </div>
           )}
@@ -288,9 +293,9 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.62rem', color: 'rgba(200,136,58,0.6)', textTransform: 'uppercase', letterSpacing: '0.18em', margin: '0 0 4px' }}>Légal</p>
               {[
-                ['Mentions légales', '/mentions-legales'],
-                ['Conditions générales de vente', '/cgv'],
-                ['Politique de confidentialité', '/confidentialite'],
+                [t.footer.legal, '/mentions-legales'],
+                [t.footer.cgv, '/cgv'],
+                [t.footer.confidentialite, '/confidentialite'],
               ].map(([label, href]) => (
                 <a key={href} href={href}
                   style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.45)', textDecoration: 'none', transition: 'color 0.2s' }}
@@ -366,6 +371,7 @@ function SectionFAQ() {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
   const [open, setOpen] = useState(null)
+  const { t } = useLanguage()
 
   return (
     <div style={{ background: 'linear-gradient(180deg, #F3EFE8 0%, #E8E3DB 100%)', padding: 'clamp(80px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
@@ -379,16 +385,16 @@ function SectionFAQ() {
           style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,72px)' }}
         >
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>
-            Questions fréquentes
+            {t.faq.eyebrow}
           </p>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: 0 }}>
-            Vous avez des <em style={{ color: 'rgba(200,136,58,0.9)' }}>questions ?</em>
+            {t.faq.title} <em style={{ color: 'rgba(200,136,58,0.9)' }}>{t.faq.titleItalic}</em>
           </h2>
         </motion.div>
 
         {/* Accordéon */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {FAQ_ITEMS.map((item, i) => {
+          {t.faq.items.map((item, i) => {
             const isOpen = open === i
             return (
               <motion.div
@@ -486,6 +492,7 @@ function MobileNav({ items }) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const update = () => {
@@ -633,8 +640,8 @@ function MobileNav({ items }) {
               })}
             </div>
 
-            {/* Footer téléphone */}
-            <div style={{ borderTop: '1px solid rgba(200,136,58,0.1)', paddingTop: '22px' }}>
+            {/* Footer téléphone + langue */}
+            <div style={{ borderTop: '1px solid rgba(200,136,58,0.1)', paddingTop: '22px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <a href="tel:0766880542" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(200,136,58,0.1)', border: '1px solid rgba(200,136,58,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(200,136,58,0.8)" strokeWidth="2" strokeLinecap="round">
@@ -642,10 +649,16 @@ function MobileNav({ items }) {
                   </svg>
                 </div>
                 <div>
-                  <p style={{ margin: '0 0 3px', fontFamily: "'DM Sans',sans-serif", fontSize: '0.6rem', color: 'rgba(200,136,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.18em', lineHeight: 1 }}>Réserver</p>
+                  <p style={{ margin: '0 0 3px', fontFamily: "'DM Sans',sans-serif", fontSize: '0.6rem', color: 'rgba(200,136,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.18em', lineHeight: 1 }}>
+                    {t.nav.reserver}
+                  </p>
                   <p style={{ margin: 0, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: '0.88rem', color: 'rgba(245,240,232,0.62)', letterSpacing: '0.04em' }}>07 66 88 05 42</p>
                 </div>
               </a>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.6rem', color: 'rgba(200,136,58,0.45)', textTransform: 'uppercase', letterSpacing: '0.18em' }}>Langue</span>
+                <LanguageSwitcher placement="up" />
+              </div>
             </div>
           </motion.div>
         )}
@@ -692,6 +705,11 @@ function NavHeader({ items }) {
         transition: 'none',
       }}
     >
+      {/* Sélecteur de langue — fixé à droite */}
+      <div style={{ position: 'absolute', right: 'clamp(16px,3vw,48px)', bottom: '14px' }}>
+        <LanguageSwitcher />
+      </div>
+
       <div style={{ position: 'relative', width: 'min(820px, 90vw)' }}>
 
         {/* Ligne ambre horizontale */}
@@ -792,11 +810,12 @@ function SectionBiplace({ sectionRef }) {
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
   const [cardFlipped, setCardFlipped] = useState(false)
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
 
   const features = [
-    { icon: '🛋️', label: 'Confortable',     spec: null,    desc: 'Selle biplace ergonomique et amortissement optimal pour deux passagers.',                        descMobile: 'Selle biplace, vous pouvez être 2 !' },
-    { icon: '⚡', label: 'Puissant',         spec: '400W',  desc: 'Moteur électrique haute performance pour gravir les côtes parisiennes sans effort.',              descMobile: 'Gravissez toutes les côtes de Paris !' },
-    { icon: '🔋', label: 'Grande autonomie', spec: '22 Ah', desc: 'Batterie longue durée pour explorer Paris du matin jusqu\'au soir.',                             descMobile: 'Explorez Paris du matin jusqu\'au soir !' },
+    { icon: '🛋️', spec: null,    ...t.biplace.features[0] },
+    { icon: '⚡', spec: '400W',  ...t.biplace.features[1] },
+    { icon: '🔋', spec: '22 Ah', ...t.biplace.features[2] },
   ]
 
   return (
@@ -887,7 +906,7 @@ function SectionBiplace({ sectionRef }) {
                     textAlign: 'center',
                     margin: 0,
                   }}>
-                    Nos vélos électriques bi-places premium vous permettent de rouler, de discuter et de partager chaque panorama ensemble. C'est l'expérience parfaite pour se balader le long de la Seine, visiter le quartier de Montmartre et vivre la Ville Lumière en parfaite complicité.
+                    {t.biplace.cardText}
                   </p>
 
                   {/* Ornement bas */}
@@ -906,10 +925,10 @@ function SectionBiplace({ sectionRef }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.28 }}>
               <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '16px' }}>
-                Notre vélo
+                {t.biplace.eyebrow}
               </p>
               <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#1E1A15', lineHeight: 1.2, margin: 0 }}>
-                Découvrez Paris,<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>côte à côte.</span>
+                {t.biplace.title}<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>{t.biplace.titleItalic}</span>
               </h3>
             </motion.div>
 
@@ -958,6 +977,8 @@ function Section2({ sectionRef, prixRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
+  const points = t.section2.points.map((pt, i) => ({ ...POINTS[i], ...pt }))
 
   return (
     <div ref={sectionRef} style={{ minHeight: '100vh', position: 'relative', background: 'linear-gradient(160deg, #FAF8F4 0%, #F0ECE4 50%, #FAF8F4 100%)', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
@@ -969,9 +990,9 @@ function Section2({ sectionRef, prixRef }) {
         {/* Texte */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', order: isMobile ? 2 : 1 }}>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, delay: 0.15 }}>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.8)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.22em', marginBottom: '12px' }}>Notre offre</p>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.8)', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.22em', marginBottom: '12px' }}>{t.section2.eyebrow}</p>
             <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.8rem,3.5vw,3rem)', color: '#1E1A15', lineHeight: 1.2, margin: 0 }}>
-              Louer votre fat bike<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>biplace</span>
+              {t.section2.title}<br /><span style={{ fontStyle: 'italic', color: 'rgba(200,136,58,0.9)' }}>{t.section2.titleItalic}</span>
             </h2>
           </motion.div>
 
@@ -979,7 +1000,7 @@ function Section2({ sectionRef, prixRef }) {
             style={{ height: '1px', background: 'linear-gradient(to right, rgba(200,136,58,0.5), transparent)', transformOrigin: 'left' }} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {POINTS.map((pt, i) => (
+            {points.map((pt, i) => (
               <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.35 + i * 0.1 }}
                 style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(200,136,58,0.12)', border: '1px solid rgba(200,136,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '1rem' }}>{pt.icon}</div>
@@ -1005,12 +1026,12 @@ function Section2({ sectionRef, prixRef }) {
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(30,26,21,0.06)'; e.currentTarget.style.borderColor = 'rgba(30,26,21,0.2)' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(30,26,21,0.7)" strokeWidth="2" strokeLinecap="round"><path d="M12 2v20M2 12h20"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 500, fontSize: '0.95rem', color: 'rgba(30,26,21,0.75)' }}>Voir les prix</span>
+              <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 500, fontSize: '0.95rem', color: 'rgba(30,26,21,0.75)' }}>{t.section2.ctaPrix}</span>
             </button>
           </motion.div>
 
           <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(30,26,21,0.3)', fontSize: '0.78rem', margin: 0 }}>
-            Disponible 7j/7 pour réserver votre aventure
+            {t.section2.disponible}
           </p>
         </div>
 
@@ -1061,6 +1082,8 @@ function Section3({ sectionRef }) {
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
   const [selected, setSelected] = useState(1)
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
+  const formules = FORMULES.map((f, i) => ({ ...f, ...t.section3.formules[i] }))
 
   return (
     <div ref={sectionRef} style={{ background: '#EDEAE3', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', overflow: 'hidden', position: 'relative' }}>
@@ -1072,19 +1095,19 @@ function Section3({ sectionRef }) {
         {/* Titre */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(36px,6vh,52px)' }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Tarifs</p>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>{t.section3.eyebrow}</p>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: '0 0 14px' }}>
-            Choisissez votre <em style={{ color: 'rgba(200,136,58,0.9)' }}>moment</em>
+            {t.section3.title} <em style={{ color: 'rgba(200,136,58,0.9)' }}>{t.section3.titleItalic}</em>
           </h2>
           <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.45)', fontSize: 'clamp(0.88rem,1.4vw,1rem)', margin: 0 }}>
-            Louer de 9h à 0h00
+            {t.section3.subtitle}
           </p>
         </motion.div>
 
         {/* Sélecteur 3 pills */}
         <motion.div initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.2 }}
           style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: 'clamp(28px,5vh,44px)', flexWrap: 'wrap' }}>
-          {FORMULES.map((f, i) => (
+          {formules.map((f, i) => (
             <motion.button key={i} onClick={() => setSelected(i)}
               whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
               style={{
@@ -1119,11 +1142,11 @@ function Section3({ sectionRef }) {
               }}>
 
               {/* Photo */}
-              <img src={FORMULES[selected].img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={formules[selected].img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.28) 50%, rgba(0,0,0,0.42) 100%)' }} />
 
               {/* Badge Le plus choisi */}
-              {FORMULES[selected].popular && (
+              {formules[selected].popular && (
                 <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
                   style={{ position: 'absolute', top: '22px', left: '22px', padding: '7px 16px', borderRadius: '50px', background: 'rgba(200,136,58,0.18)', border: '1px solid rgba(200,136,58,0.55)', backdropFilter: 'blur(10px)' }}>
                   <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: '0.7rem', color: 'rgba(200,136,58,1)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>★ Le plus choisi</span>
@@ -1131,11 +1154,11 @@ function Section3({ sectionRef }) {
               )}
 
               {/* Badge 0h00 */}
-              {FORMULES[selected].midnight && (
+              {formules[selected].midnight && (
                 <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
                   style={{ position: 'absolute', top: '22px', right: '22px', padding: '8px 18px', borderRadius: '50px', background: 'rgba(10,6,2,0.82)', border: '1px solid rgba(200,136,58,0.55)', backdropFilter: 'blur(12px)', boxShadow: '0 0 20px rgba(200,136,58,0.2)' }}>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.78rem', color: '#C8883A', letterSpacing: '0.08em', display: 'block' }}>🌙 Jusqu'à 0h00</span>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 400, fontSize: '0.65rem', color: 'rgba(200,136,58,0.65)', letterSpacing: '0.06em', display: 'block', marginTop: '2px' }}>moyennant un supplément</span>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: '0.78rem', color: '#C8883A', letterSpacing: '0.08em', display: 'block' }}>🌙 {t.section3.midnight}</span>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 400, fontSize: '0.65rem', color: 'rgba(200,136,58,0.65)', letterSpacing: '0.06em', display: 'block', marginTop: '2px' }}>{t.section3.supplement}</span>
                 </motion.div>
               )}
 
@@ -1144,18 +1167,18 @@ function Section3({ sectionRef }) {
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }}
                   style={{ marginBottom: '18px', padding: '7px 20px', borderRadius: '50px', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
                   <span style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(255,255,255,0.92)', fontSize: '0.82rem', fontWeight: 600, letterSpacing: '0.12em' }}>
-                    {FORMULES[selected].horaire}
+                    {formules[selected].horaire}
                   </span>
                 </motion.div>
                 <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.45 }}
                   style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(5rem,12vw,8rem)', color: '#fff', lineHeight: 1, margin: 0, textAlign: 'center' }}>
-                  {FORMULES[selected].prix}<span style={{ fontSize: '0.42em', color: 'rgba(200,136,58,0.9)', verticalAlign: 'super', marginLeft: '6px' }}>€</span>
+                  {formules[selected].prix}<span style={{ fontSize: '0.42em', color: 'rgba(200,136,58,0.9)', verticalAlign: 'super', marginLeft: '6px' }}>€</span>
                 </motion.p>
                 <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.2, duration: 0.6 }}
                   style={{ width: '48px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(200,136,58,0.7), transparent)', margin: '16px 0', transformOrigin: 'center' }} />
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28, duration: 0.5 }}
                   style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', fontWeight: 700, color: 'rgba(255,255,255,0.88)', fontSize: 'clamp(1.05rem,2vw,1.3rem)', textAlign: 'center', margin: 0, maxWidth: '500px', lineHeight: 1.65 }}>
-                  {FORMULES[selected].desc}
+                  {formules[selected].desc}
                 </motion.p>
               </div>
             </motion.div>
@@ -1172,7 +1195,7 @@ function Section3({ sectionRef }) {
             boxShadow: '0 0 28px rgba(200,136,58,0.1)',
             fontFamily: "'DM Sans',sans-serif", fontSize: '0.82rem', color: 'rgba(245,240,232,0.78)', letterSpacing: '0.04em',
           }}>
-            🌙 <span>Toutes nos formules disponibles <strong style={{ color: 'rgba(200,136,58,0.92)', fontWeight: 700 }}>jusqu'à 0h00</strong> · Possibilité de louer juste une soirée</span>
+            🌙 <span>{t.section3.available} · {t.section3.evening}</span>
           </span>
         </motion.div>
 
@@ -1275,6 +1298,8 @@ function Section4({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-60px' })
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
+  const steps = t.section4.steps.map((step, i) => ({ ...STEPS[i], ...step }))
 
   return (
     <div ref={sectionRef} style={{ background: 'linear-gradient(180deg, #EDEAE3 0%, #FAF8F4 100%)', padding: 'clamp(70px,12vh,120px) clamp(24px,5vw,80px)', position: 'relative', overflow: 'hidden' }}>
@@ -1284,15 +1309,15 @@ function Section4({ sectionRef }) {
         {/* Titre */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8 }}
           style={{ textAlign: 'center', marginBottom: 'clamp(48px,8vh,80px)' }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>Simple & rapide</p>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '12px' }}>{t.section4.eyebrow}</p>
           <h2 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(2rem,4vw,3.2rem)', color: '#1E1A15', margin: 0 }}>
-            Comment <em style={{ color: 'rgba(200,136,58,0.9)' }}>réserver</em>
+            {t.section4.title} <em style={{ color: 'rgba(200,136,58,0.9)' }}>{t.section4.titleItalic}</em>
           </h2>
         </motion.div>
 
         {/* Steps */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          {STEPS.map((step, i) => (
+          {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -14 }}
@@ -1301,7 +1326,7 @@ function Section4({ sectionRef }) {
               style={{ display: 'flex', gap: 'clamp(24px,4vw,48px)', alignItems: 'flex-start', paddingBottom: i < STEPS.length - 1 ? '40px' : 0, position: 'relative' }}
             >
               {/* Ligne verticale entre les steps */}
-              {i < STEPS.length - 1 && (
+              {i < steps.length - 1 && (
                 <div style={{ position: 'absolute', left: 'calc(clamp(24px,4vw,48px) / 2 + 22px)', top: '60px', bottom: 0, width: '1px', background: 'linear-gradient(to bottom, rgba(200,136,58,0.25), rgba(200,136,58,0.05))' }} />
               )}
 
@@ -1325,7 +1350,7 @@ function Section4({ sectionRef }) {
         {/* CTA final */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.8 }}
           style={{ textAlign: 'center', marginTop: 'clamp(48px,8vh,80px)' }}>
-          <PhoneBtn label="Réserver" />
+          <PhoneBtn label={t.section4.phoneLabel} />
         </motion.div>
 
       </div>
@@ -1341,6 +1366,7 @@ function Section5({ sectionRef }) {
   const innerRef = useRef(null)
   const isInView = useInView(innerRef, { once: true, margin: '-80px' })
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
 
   return (
     <div ref={sectionRef} style={{ position: 'relative', background: '#F3EFE8', overflow: 'hidden', padding: 'clamp(80px,14vh,140px) clamp(24px,5vw,80px)' }}>
@@ -1358,15 +1384,15 @@ function Section5({ sectionRef }) {
         <motion.p
           initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}
           style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(200,136,58,0.75)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.24em', marginBottom: '20px' }}
-        >Louer avant d'acheter</motion.p>
+        >{t.section5.eyebrow}</motion.p>
 
         {/* Titre */}
         <motion.h2
           initial={{ opacity: 0, y: 10 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }}
           style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 'clamp(1.9rem,4vw,3.2rem)', color: '#1E1A15', lineHeight: 1.18, margin: '0 0 clamp(32px,5vh,52px)' }}
         >
-          Testez les sensations du Fat Bike<br />
-          <em style={{ color: 'rgba(200,136,58,0.9)' }}>avant d'en acheter un !</em>
+          {t.section5.title}<br />
+          <em style={{ color: 'rgba(200,136,58,0.9)' }}>{t.section5.titleItalic}</em>
         </motion.h2>
 
         {/* Paragraphe 1 */}
@@ -1376,12 +1402,9 @@ function Section5({ sectionRef }) {
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
-            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              {isMobile
-                ? <>Certains de nos clients testent les sensations du Fat Bike avec nous avant d'en acheter un — <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>c'est la meilleure façon d'être sûr de votre choix.</strong></>
-                : <>Beaucoup de nos clients louent nos vélos pour quelques heures ou quelques jours dans un but précis : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>tester les vraies sensations du Fat Bike sur le terrain avant de franchir le pas de l'achat.</strong> C'est la meilleure manière d'être sûr de votre choix. Un essai de 10 minutes autour d'un magasin ne suffit pas pour valider votre futur investissement.</>
-              }
-            </p>
+            <p data-rich style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}
+              dangerouslySetInnerHTML={{ __html: isMobile ? t.section5.para1Mobile : t.section5.para1 }}
+            />
           </div>
         </motion.div>
 
@@ -1398,12 +1421,9 @@ function Section5({ sectionRef }) {
         >
           <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
             <div style={{ width: '3px', flexShrink: 0, alignSelf: 'stretch', background: 'linear-gradient(to bottom, rgba(200,136,58,0.7), rgba(200,136,58,0.1))', borderRadius: '2px', marginTop: '4px' }} />
-            <p style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}>
-              {isMobile
-                ? <>On vous conseille ensuite objectivement : <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>marques, puissance, autonomie, pièges à éviter</strong> — pour acheter le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike qui vous correspond.</em></>
-                : <>En louant avec nous, vous profitez aussi de <strong style={{ color: 'rgba(30,26,21,0.95)', fontWeight: 600 }}>notre expertise</strong> : on vous conseille objectivement sur l'achat de votre futur vélo (marques, puissance, autonomie, pièges à éviter). On fait le point ensemble après votre test pour que vous achetiez le <em style={{ color: 'rgba(200,136,58,0.85)' }}>Fat Bike parfait pour votre quotidien à Paris.</em></>
-              }
-            </p>
+            <p data-rich style={{ fontFamily: "'DM Sans',sans-serif", color: 'rgba(30,26,21,0.75)', fontSize: 'clamp(0.95rem,1.5vw,1.1rem)', lineHeight: 1.75, margin: 0 }}
+              dangerouslySetInnerHTML={{ __html: isMobile ? t.section5.para2Mobile : t.section5.para2 }}
+            />
           </div>
         </motion.div>
 
@@ -1412,9 +1432,9 @@ function Section5({ sectionRef }) {
           initial={{ opacity: 0, y: 6 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.6 }}
           style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? '14px' : '20px' }}
         >
-          <PhoneBtn label="Réserver mon test" />
+          <PhoneBtn label={t.section5.cta} />
           <p style={{ fontFamily: "'Playfair Display',serif", fontStyle: 'italic', color: 'rgba(30,26,21,0.35)', fontSize: '0.82rem', margin: 0 }}>
-            Conseil d'achat inclus après votre test
+            {t.section5.conseil}
           </p>
         </motion.div>
 

@@ -48,3 +48,6 @@ button, a, [role="button"] {
 #root {
   min-height: 100%;
 }
+
+[data-rich] strong { color: rgba(30,26,21,0.95); font-weight: 600; }
+[data-rich] em { color: rgba(200,136,58,0.85); font-style: italic; }

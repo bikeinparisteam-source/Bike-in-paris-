@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { LanguageProvider } from './context/LanguageContext'
 import Home from './pages/Home'
 import TunnelWrapper from './pages/tunnel/TunnelWrapper'
 import Payment from './pages/Payment'
@@ -11,6 +12,7 @@ import CookieBanner from './components/CookieBanner'
 
 export default function App() {
   return (
+    <LanguageProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -24,5 +26,6 @@ export default function App() {
       </Routes>
       <CookieBanner />
     </BrowserRouter>
+    </LanguageProvider>
   )
 }

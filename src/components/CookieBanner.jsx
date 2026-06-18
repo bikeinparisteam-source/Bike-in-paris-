@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../context/LanguageContext'
 
 function useIsMobile(bp = 768) {
   const [m, setM] = useState(() => typeof window !== 'undefined' && window.innerWidth < bp)
@@ -16,6 +17,7 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false)
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const consent = localStorage.getItem('bip_cookie_consent')
@@ -66,15 +68,15 @@ export default function CookieBanner() {
               </div>
               <div>
                 <p style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: '0.85rem', color: '#F5F0E8', margin: '0 0 3px' }}>
-                  Ce site utilise des cookies
+                  {t.cookie.title}
                 </p>
                 <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.76rem', color: 'rgba(245,240,232,0.45)', margin: 0, lineHeight: 1.5 }}>
-                  Cookies essentiels + Stripe.{' '}
+                  {t.cookie.text}{' '}
                   <span
                     onClick={() => navigate('/confidentialite')}
                     style={{ color: 'rgba(200,136,58,0.75)', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px' }}
                   >
-                    En savoir plus
+                    {t.cookie.more}
                   </span>
                 </p>
               </div>
@@ -94,7 +96,7 @@ export default function CookieBanner() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(245,240,232,0.3)'; e.currentTarget.style.color = 'rgba(245,240,232,0.75)' }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(58,56,80,0.7)'; e.currentTarget.style.color = 'rgba(245,240,232,0.45)' }}
               >
-                Refuser
+                {t.cookie.refuse}
               </button>
               <button
                 onClick={accept}
@@ -110,7 +112,7 @@ export default function CookieBanner() {
                 onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 28px rgba(200,136,58,0.5)'}
                 onMouseLeave={e => e.currentTarget.style.boxShadow = '0 0 18px rgba(200,136,58,0.3)'}
               >
-                Accepter
+                {t.cookie.accept}
               </button>
             </div>
           </div>
